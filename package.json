@@ -12,7 +12,11 @@
     "type": "git",
     "url": "https://github.com/freestarcapital/pubfig-adslot-react-component.git"
   },
-  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/freestarcapital/pubfig-adslot-react-component/issues"
+  },
+  "homepage": "https://github.com/freestarcapital/pubfig-adslot-react-component#readme",
+  "license": "ISC",
   "dependencies": {
     "@reach/router": "^1.2.1",
     "prop-types": "^15.7.2",
