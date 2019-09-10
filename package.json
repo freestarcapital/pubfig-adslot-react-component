@@ -28,8 +28,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "build-lib": "NODE_ENV=production && mkdir -p ./dist && rm -rf ./dist/* && npx babel src/components/FreestarAdSlot --out-dir dist --copy-files",
-    "eject": "react-scripts eject",
-    "postinstall": "npm run build-lib"
+    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": "react-app"
