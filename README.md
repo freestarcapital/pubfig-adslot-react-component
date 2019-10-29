@@ -49,6 +49,7 @@ class Demo extends Component {
       <div>
         <FreestarAdSlot
           adUnit={adUnit}
+          channel='custom_channel'
           classList={['m-30', 'p-15', 'b-thin-red']}
           adRefresh={adRefreshCount}
           onNewAdSlotsHook={(placementName) => console.log('freestar.newAdSlots() was called', {placementName})}
@@ -68,6 +69,9 @@ export default Demo
 
 **adUnit**
 A *required* object with the properties `placementName` & `slotId`.
+
+**channel**
+An *optional* string of a custom channel to use.
 
 **classList**
 An *optional* array of strings representing any additional classes that should be applied to the wrapper dom element of the ad slot.
