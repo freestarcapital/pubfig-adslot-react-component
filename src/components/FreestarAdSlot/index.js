@@ -44,10 +44,10 @@ class FreestarAdSlot extends Component {
   }
 
   newAdSlots = () => {
-    const { adUnit, onNewAdSlotsHook } = this.props
+    const { adUnit, onNewAdSlotsHook, channel } = this.props
     getFreestar().then(freestar => {
       if (this.adSlotIsReady(adUnit)) {
-        freestar.newAdSlots(adUnit)
+        freestar.newAdSlots(adUnit, channel);
         onNewAdSlotsHook(adUnit.placementName)
       }
     })
@@ -75,6 +75,7 @@ FreestarAdSlot.propTypes = {
     placementName: PropTypes.string.isRequired,
     slotId: PropTypes.string.isRequired,
   }).isRequired,
+  channel: PropTypes.string,
   classList: PropTypes.array,
   adRefresh: PropTypes.number,
   onNewAdSlotsHook: PropTypes.func,
@@ -84,6 +85,7 @@ FreestarAdSlot.propTypes = {
 
 FreestarAdSlot.defaultProps = {
   adUnit: {},
+  channel: null,
   classList: [],
   adRefresh: 0,
   onNewAdSlotsHook: () => {},
