@@ -42,7 +42,8 @@ class Demo extends Component {
   render() {
     const adUnit = {
       placementName: 'div-gpt-ad-leaderboard-multi',
-      slotId: 'div-gpt-ad-leaderboard-multi'
+      slotId: 'div-gpt-ad-leaderboard-multi',
+      targeting: ['value1', 'value2']
     }
     const { adRefreshCount } = this.state
     return (
@@ -68,7 +69,7 @@ export default Demo
 ### Props
 
 **adUnit**
-A *required* object with the properties `placementName` & `slotId`.
+A *required* object with *required* `placementName` & `slotId` and *optional* `targeting` properties.
 
 **channel**
 An *optional* string of a custom channel to use.
@@ -78,3 +79,14 @@ An *optional* array of strings representing any additional classes that should b
 
 **adRefresh**
 An *optional* number bound to the ad refresh. You can increment this value to trigger a refresh of the ad slot.
+
+### Glossary
+
+**placementName**
+A value acquired from Google Ad Manager (previously known as DFP/Adx), which will be provided by Freestar.
+
+**slotId**
+A value used for the DOM `<div>` id for the ad unit to render within.
+
+**targeting**
+A set of targeting values for the ad unit placement.
