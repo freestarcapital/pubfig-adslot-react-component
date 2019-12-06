@@ -74,6 +74,7 @@ FreestarAdSlot.propTypes = {
   adUnit: PropTypes.shape({
     placementName: PropTypes.string.isRequired,
     slotId: PropTypes.string.isRequired,
+    targeting: PropTypes.array
   }).isRequired,
   channel: PropTypes.string,
   classList: PropTypes.array,

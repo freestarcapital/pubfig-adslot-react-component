@@ -35,7 +35,8 @@ class Demo extends Component {
   render() {
     const adUnit = {
       placementName: 'div-gpt-ad-leaderboard-multi',
-      slotId: 'div-gpt-ad-leaderboard-multi'
+      slotId: 'div-gpt-ad-leaderboard-multi',
+      targeting: ['value1', 'value2']
     }
     const { adRefreshCount } = this.state
     return (
