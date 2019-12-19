@@ -6,11 +6,27 @@ import './demo.css'
 
 class Demo extends Component {
   state = {
-    adRefreshCount: 0
+    adRefreshCount: 0,
+    adUnits: []
   }
 
   componentDidMount () {
-    // example of automatically refreshing an ad every 5 seconds a total of 5 times
+    if (window.freestar && window.freestar.fsdata && window.freestar.fsdata.placements) {
+      const adUnits = window.freestar.fsdata.placements.map(adUnit => {
+        return {
+          placementName: adUnit.name,
+          slotId: adUnit.name,
+          // targeting: ['value1', 'value2'] // optionally pass specific targeting
+        };
+      });
+      this.setState({ adUnits })
+    }
+
+    // example of automatically refreshing an ad every 30 seconds a total of 5 times
+    this.createAutoRefresh();
+  }
+
+  createAutoRefresh = () => {
     const interval = setInterval(() => {
       const maxRefreshes = 5
       this.setState({
@@ -21,7 +37,24 @@ class Demo extends Component {
           clearInterval(interval)
         }
       })
-    }, 5000)
+    }, 30000)
+  }
+
+  generateAdSlots = () => {
+    const { adRefreshCount, adUnits } = this.state
+    return adUnits.map(adUnit => (
+      <div key={adUnit.name}>
+        <FreestarAdSlot
+          adUnit={adUnit}
+          channel='custom_channel'
+          classList={['m-30', 'p-15', 'b-thin-red']}
+          adRefresh={adRefreshCount}
+          onNewAdSlotsHook={(placementName) => console.log('freestar.newAdSlots() was called', {placementName})}
+          onDeleteAdSlotsHook={(placementName) => console.log('freestar.deleteAdSlots() was called', {placementName})}
+          onAdRefreshHook={(placementName) => console.log('adRefresh was called', {placementName})}
+        />
+      </div>
+    ))
   }
 
   // example of manually refreshing an ad
@@ -33,24 +66,10 @@ class Demo extends Component {
   }
 
   render() {
-    const adUnit = {
-      placementName: 'div-gpt-ad-leaderboard-multi',
-      slotId: 'div-gpt-ad-leaderboard-multi',
-      targeting: ['value1', 'value2']
-    }
-    const { adRefreshCount } = this.state
     return (
       <div>
-        <FreestarAdSlot
-          adUnit={adUnit}
-          channel='custom_channel'
-          classList={['m-30', 'p-15', 'b-thin-red']}
-          adRefresh={adRefreshCount}
-          onNewAdSlotsHook={(placementName) => console.log('freestar.newAdSlots() was called', {placementName})}
-          onDeleteAdSlotsHook={(placementName) => console.log('freestar.deleteAdSlots() was called', {placementName})}
-          onAdRefreshHook={(placementName) => console.log('adRefresh was called', {placementName})}
-        />
-        <button onClick={this.onAdRefresh}>Trigger Refresh</button>
+        <button onClick={this.onAdRefresh}>Refresh All Ads</button>
+        {this.generateAdSlots()}
       </div>
     )
   }
