@@ -20,6 +20,8 @@ class Demo extends Component {
         };
       });
       this.setState({ adUnits })
+    } else {
+      console.warn('Could not find window.freestar.fsdata. Please visit https://freestar.com/ or contact a Freestar representative.');
     }
 
     // example of automatically refreshing an ad every 30 seconds a total of 5 times
@@ -42,8 +44,8 @@ class Demo extends Component {
 
   generateAdSlots = () => {
     const { adRefreshCount, adUnits } = this.state
-    return adUnits.map(adUnit => (
-      <div key={adUnit.name}>
+    return adUnits.map((adUnit, index) => (
+      <div key={`adUnit-${index}`}>
         <FreestarAdSlot
           adUnit={adUnit}
           channel='custom_channel'
