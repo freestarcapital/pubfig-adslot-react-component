@@ -11,9 +11,7 @@ npm install --save @freestar/pubfig-adslot-react-component
 ```js
 import React, { Component } from 'react'
 
-import FreestarAdSlot from './components/FreestarAdSlot/index'
-
-import './demo.css'
+import FreestarAdSlot from '@freestar/pubfig-adslot-react-component'
 
 class Demo extends Component {
   state = {
