@@ -4,6 +4,24 @@ import FreestarAdSlot from './components/FreestarAdSlot/index'
 
 import './demo.css'
 
+const getFreestar = () => {
+  return new Promise((resolve, reject) => {
+    const maxTries = 10
+    let retryCount = 0
+    const waitForFreestarReady = setInterval(() => {
+      if (window.freestar && window.googletag && window.googletag.apiReady) {
+        clearInterval(waitForFreestarReady)
+        resolve(window.freestar)
+      } else if (retryCount === maxTries) {
+        clearInterval(waitForFreestarReady)
+        reject(`freestar NOT ready after ${maxTries} tries`)
+      } else {
+        retryCount++
+      }
+    }, 10)
+  })
+}
+
 class Demo extends Component {
   state = {
     adRefreshCount: 0,
@@ -11,18 +29,18 @@ class Demo extends Component {
   }
 
   componentDidMount () {
-    if (window.freestar && window.freestar.fsdata && window.freestar.fsdata.placements) {
-      const adUnits = window.freestar.fsdata.placements.map(adUnit => {
-        return {
-          placementName: adUnit.name,
-          slotId: adUnit.name,
-          // targeting: ['value1', 'value2'] // optionally pass specific targeting
-        };
-      });
-      this.setState({ adUnits })
-    } else {
-      console.warn('Could not find window.freestar.fsdata. Please visit https://freestar.com/ or contact a Freestar representative.');
-    }
+    getFreestar().then(() => {
+      if (window.freestar.fsdata.placements) {
+        const adUnits = window.freestar.fsdata.placements.map(adUnit => {
+          return {
+            placementName: adUnit.name,
+            slotId: adUnit.name,
+            // targeting: ['value1', 'value2'] // optionally pass specific targeting
+          };
+        });
+        this.setState({ adUnits })
+      }
+    });
 
     // example of automatically refreshing an ad every 30 seconds a total of 5 times
     this.createAutoRefresh();
