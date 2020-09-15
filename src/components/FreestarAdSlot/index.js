@@ -1,59 +1,37 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Promise } from 'q'
-
-const getFreestar = () => {
-  return new Promise((resolve, reject) => {
-    const maxTries = 10
-    let retryCount = 0
-    const waitForFreestarReady = setInterval(() => {
-      if (window.freestar && window.googletag && window.googletag.apiReady) {
-        clearInterval(waitForFreestarReady)
-        resolve(window.freestar)
-      } else if (retryCount === maxTries) {
-        clearInterval(waitForFreestarReady)
-        reject(`freestar NOT ready after ${maxTries} tries`)
-      } else {
-        retryCount++
-      }
-    }, 10)
-  })
-}
 
 class FreestarAdSlot extends Component {
   componentDidMount () {
-    this.newAdSlots()
-  }
+    const { publisher, debug } = this.props
+    const qa = debug ? '/qa' : ''
+    const url = `https://a.pub.network/${publisher}${qa}/pubfig.min.js`
 
-  componentWillUnmount () {
-    const { adUnit, onDeleteAdSlotsHook } = this.props
-    getFreestar().then(freestar => {
-      if (this.adSlotIsReady(adUnit)) {
-        freestar.deleteAdSlots(adUnit)
-        onDeleteAdSlotsHook(adUnit.placementName)
-      }
-    })
-  }
-
-  componentWillReceiveProps (nextProps) {
-    const { adUnit, onAdRefreshHook } = this.props
-    if (nextProps.adRefresh !== this.props.adRefresh) {
+    const script = document.createElement('script')
+    script.src = url
+    document.body.appendChild(script)
+    script.onload = () => {
+      window.freestar.hitTime = Date.now()
+      window.freestar.queue = []
+      window.freestar.config = {}
       this.newAdSlots()
-      onAdRefreshHook(adUnit.placementName)
     }
   }
 
-  newAdSlots = () => {
-    const { adUnit, onNewAdSlotsHook, channel } = this.props
-    getFreestar().then(freestar => {
-      if (this.adSlotIsReady(adUnit)) {
-        freestar.newAdSlots(adUnit, channel);
-        onNewAdSlotsHook(adUnit.placementName)
-      }
-    })
+  componentWillUnmount () {
+    const { placementName, onDeleteAdSlotsHook } = this.props
+    window.freestar.deleteAdSlots({ placementName })
+    onDeleteAdSlotsHook(placementName)
   }
 
-  adSlotIsReady = ({ placementName, slotId }) => placementName && slotId && document.getElementById(placementName)
+  newAdSlots = () => {
+    const { placementName, onNewAdSlotsHook, channel } = this.props
+    window.freestar.newAdSlots({
+      slotId: placementName,
+      placementName
+    }, channel)
+    onNewAdSlotsHook(placementName)
+  }
 
   classes = () => {
     const { classList } = this.props
@@ -61,37 +39,33 @@ class FreestarAdSlot extends Component {
   }
 
   render() {
-    const { adUnit } = this.props
+    const { placementName } = this.props
     return (
       <div>
-        <div className={this.classes()} id={adUnit.placementName}></div>
+        <div className={this.classes()} id={placementName}></div>
       </div>
     )
   }
 }
 
 FreestarAdSlot.propTypes = {
-  adUnit: PropTypes.shape({
-    placementName: PropTypes.string.isRequired,
-    slotId: PropTypes.string.isRequired,
-    targeting: PropTypes.array
-  }).isRequired,
+  publisher: PropTypes.string.isRequired,
+  placementName: PropTypes.string.isRequired,
+  targeting: PropTypes.object,
   channel: PropTypes.string,
   classList: PropTypes.array,
-  adRefresh: PropTypes.number,
   onNewAdSlotsHook: PropTypes.func,
-  onDeleteAdSlotsHook: PropTypes.func,
-  onAdRefreshHook: PropTypes.func
-};
+  onDeleteAdSlotsHook: PropTypes.func
+}
 
 FreestarAdSlot.defaultProps = {
-  adUnit: {},
+  publisher: '',
+  placementName: '',
+  targeting: {},
   channel: null,
   classList: [],
-  adRefresh: 0,
   onNewAdSlotsHook: () => {},
-  onDeleteAdSlotsHook: () => {},
-  onAdRefreshHook: () => {}
+  onDeleteAdSlotsHook: () => {}
 }
 
 export default FreestarAdSlot

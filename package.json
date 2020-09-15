@@ -6,7 +6,7 @@
     "pubfig",
     "adslot-react-component"
   ],
-  "version": "1.0.9",
+  "version": "1.0.10",
   "private": false,
   "repository": {
     "type": "git",
@@ -15,7 +15,6 @@
   "bugs": {
     "url": "https://github.com/freestarcapital/pubfig-adslot-react-component/issues"
   },
-  "homepage": "https://github.com/freestarcapital/pubfig-adslot-react-component#readme",
   "license": "ISC",
   "dependencies": {
     "@reach/router": "^1.2.1",
