@@ -9,6 +9,7 @@ class FreestarAdSlot extends Component {
 
     const script = document.createElement('script')
     script.src = url
+    script.async = true
     document.body.appendChild(script)
     script.onload = () => {
       window.freestar.hitTime = Date.now()
