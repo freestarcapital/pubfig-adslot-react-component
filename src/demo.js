@@ -5,13 +5,13 @@ import FreestarAdSlot from './components/FreestarAdSlot/index'
 import './demo.css'
 
 const Demo = () => {
-  const placementName = 'GardeningKnowHow_970x250_728x90_320x50_Blog_Leaderboard_'
+  const placementName = 'PublisherName_970x250_728x90_320x50'
   const targeting = { key1: 'value1', key2: 'value2' }
 
   return (
     <div>
       <FreestarAdSlot
-        publisher='gardeningknowhow'
+        publisher='publishername'
         placementName={placementName}
         targeting={targeting}
         channel='custom_channel'
