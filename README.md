@@ -18,17 +18,17 @@ import './demo.css'
 const Demo = () => {
   const placementName = 'GardeningKnowHow_970x250_728x90_320x50_Blog_Leaderboard_'
   const targeting = { key1: 'value1', key2: 'value2' }
-  }
+
   return (
     <div>
       <FreestarAdSlot
         publisher='gardeningknowhow'
-        placementName={placementName} // a placement name of the ad unit, which will be provided by Freestar
-        targeting={targeting} // optional prop for setting custom targeting values
-        channel='custom_channel' // optional prop for setting custom channel
-        classList={['m-30', 'p-15', 'b-thin-red']} // optional prop for styling the ad unit dom node wrapper
-        onNewAdSlotsHook={(placementName) => console.log('freestar.newAdSlots() was called', {placementName})} // optional event hook that returns the placement name when the component mounts
-        onDeleteAdSlotsHook={(placementName) => console.log('freestar.deleteAdSlots() was called', {placementName})} // optional event hook that returns the placement name when the component unmounts
+        placementName={placementName}
+        targeting={targeting}
+        channel='custom_channel'
+        classList={['m-30', 'p-15', 'b-thin-red']}
+        onNewAdSlotsHook={(placementName) => console.log('freestar.newAdSlots() was called', {placementName})}
+        onDeleteAdSlotsHook={(placementName) => console.log('freestar.deleteAdSlots() was called', {placementName})}
       />
     </div>
   )
