@@ -23,12 +23,12 @@ const Demo = () => {
     <div>
       <FreestarAdSlot
         publisher='gardeningknowhow'
-        placementName={placementName}
-        targeting={targeting}
-        channel='custom_channel'
-        classList={['m-30', 'p-15', 'b-thin-red']}
-        onNewAdSlotsHook={(placementName) => console.log('freestar.newAdSlots() was called', {placementName})}
-        onDeleteAdSlotsHook={(placementName) => console.log('freestar.deleteAdSlots() was called', {placementName})}
+        placementName={placementName} // a placement name of the ad unit, which will be provided by Freestar
+        targeting={targeting} // optional prop for setting custom targeting values
+        channel='custom_channel' // optional prop for setting custom channel
+        classList={['m-30', 'p-15', 'b-thin-red']} // optional prop for styling the ad unit dom node wrapper
+        onNewAdSlotsHook={(placementName) => console.log('freestar.newAdSlots() was called', {placementName})} // optional event hook that returns the placement name when the component mounts
+        onDeleteAdSlotsHook={(placementName) => console.log('freestar.deleteAdSlots() was called', {placementName})} // optional event hook that returns the placement name when the component unmounts
       />
     </div>
   )
@@ -40,7 +40,7 @@ export default Demo
 ### Props
 
 **placementName**
-A *required* string of the ad unit placement.
+A *required* string of the ad unit placement, which will be provided by Freestar.
 
 **targeting**
 An *optional* object of key/value pairs for targeting.

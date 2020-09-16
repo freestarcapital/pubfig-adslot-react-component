@@ -3,8 +3,8 @@ import PropTypes from 'prop-types'
 
 class FreestarAdSlot extends Component {
   componentDidMount () {
-    const { publisher, debug } = this.props
-    const qa = debug ? '/qa' : ''
+    const { publisher } = this.props
+    const qa = window.location.search.indexOf('fsdebug') > -1 ? '/qa' : ''
     const url = `https://a.pub.network/${publisher}${qa}/pubfig.min.js`
 
     const script = document.createElement('script')
