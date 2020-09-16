@@ -39,6 +39,9 @@ export default Demo
 
 ### Props
 
+**publisher**
+A *required* string of the publisher, which will be provided by Freestar.
+
 **placementName**
 A *required* string of the ad unit placement, which will be provided by Freestar.
 
