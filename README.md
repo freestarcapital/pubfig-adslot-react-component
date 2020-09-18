@@ -21,8 +21,8 @@ const Demo = () => {
   return (
     <div>
       <FreestarAdSlot
-        publisher= publisher
-        placementName= placementName
+        publisher= { publisher }
+        placementName= { placementName }
         targeting={{ key1: 'value1', key2: 'value2' }}
         channel='custom_channel'
         classList={['m-30', 'p-15', 'b-thin-red']}
