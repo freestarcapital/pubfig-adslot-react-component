@@ -17,7 +17,7 @@ import './demo.css'
 
 const Demo = () => {
   const placementName = 'PublisherName_970x250_728x90_320x50'
-  const publisher = 'publisherName';
+  const publisher = 'publisherName'
   return (
     <div>
       <FreestarAdSlot
