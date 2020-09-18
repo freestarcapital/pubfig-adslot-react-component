@@ -14,7 +14,9 @@ class FreestarAdSlot extends Component {
     script.onload = () => {
       window.freestar.hitTime = Date.now()
       window.freestar.queue = []
-      window.freestar.config = {}
+      window.freestar.config = {
+        enabled_slots: []
+      }
       this.newAdSlots()
     }
   }
