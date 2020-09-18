@@ -6,12 +6,13 @@ import './demo.css'
 
 const Demo = () => {
   const placementName = 'PublisherName_970x250_728x90_320x50'
+  const publisher = 'publisherName'
   const targeting = { key1: 'value1', key2: 'value2' }
 
   return (
     <div>
       <FreestarAdSlot
-        publisher='publishername'
+        publisher={publisher}
         placementName={placementName}
         targeting={targeting}
         channel='custom_channel'
