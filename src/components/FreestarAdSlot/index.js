@@ -28,10 +28,11 @@ class FreestarAdSlot extends Component {
   }
 
   newAdSlots = () => {
-    const { placementName, onNewAdSlotsHook, channel } = this.props
+    const { placementName, onNewAdSlotsHook, channel, targeting } = this.props
     window.freestar.newAdSlots({
       slotId: placementName,
-      placementName
+      placementName,
+      targeting
     }, channel)
     onNewAdSlotsHook(placementName)
   }
