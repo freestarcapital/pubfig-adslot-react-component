@@ -27,6 +27,14 @@ class FreestarAdSlot extends Component {
     onDeleteAdSlotsHook(placementName)
   }
 
+  componentWillReceiveProps (nextProps) {
+    const { placementName, onAdRefreshHook } = this.props
+    if (nextProps.adRefresh !== this.props.adRefresh) {
+      this.newAdSlots()
+      onAdRefreshHook(placementName)
+    }
+  }
+
   newAdSlots = () => {
     const { placementName, onNewAdSlotsHook, channel, targeting } = this.props
     window.freestar.newAdSlots({
@@ -58,8 +66,10 @@ FreestarAdSlot.propTypes = {
   targeting: PropTypes.object,
   channel: PropTypes.string,
   classList: PropTypes.array,
+  adRefresh: PropTypes.number,
   onNewAdSlotsHook: PropTypes.func,
-  onDeleteAdSlotsHook: PropTypes.func
+  onDeleteAdSlotsHook: PropTypes.func,
+  onAdRefreshHook: PropTypes.func
 }
 
 FreestarAdSlot.defaultProps = {
@@ -68,8 +78,10 @@ FreestarAdSlot.defaultProps = {
   targeting: {},
   channel: null,
   classList: [],
+  adRefresh: 0,
   onNewAdSlotsHook: () => {},
-  onDeleteAdSlotsHook: () => {}
+  onDeleteAdSlotsHook: () => {},
+  onAdRefreshHook: () => {}
 }
 
 export default FreestarAdSlot
