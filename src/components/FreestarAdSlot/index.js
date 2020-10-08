@@ -1,6 +1,24 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
+const getFreestar = () => {
+  return new Promise((resolve, reject) => {
+    const maxTries = 10
+    let retryCount = 0
+    const waitForFreestarReady = setInterval(() => {
+      if (window.freestar && window.googletag && window.googletag.apiReady) {
+        clearInterval(waitForFreestarReady)
+        resolve(window.freestar)
+      } else if (retryCount === maxTries) {
+        clearInterval(waitForFreestarReady)
+        reject(`freestar NOT ready after ${maxTries} tries`)
+      } else {
+        retryCount++
+      }
+    }, 10)
+  })
+}
+
 class FreestarAdSlot extends Component {
   componentDidMount () {
     const { publisher } = this.props
@@ -23,18 +41,22 @@ class FreestarAdSlot extends Component {
 
   componentWillUnmount () {
     const { placementName, onDeleteAdSlotsHook } = this.props
-    window.freestar.deleteAdSlots({ placementName })
-    onDeleteAdSlotsHook(placementName)
+    getFreestar().then(freestar => {
+      freestar.deleteAdSlots({ placementName })
+      onDeleteAdSlotsHook(placementName)
+    })
   }
 
   newAdSlots = () => {
     const { placementName, onNewAdSlotsHook, channel, targeting } = this.props
-    window.freestar.newAdSlots({
-      slotId: placementName,
-      placementName,
-      targeting
-    }, channel)
-    onNewAdSlotsHook(placementName)
+    getFreestar().then(freestar => {
+      freestar.newAdSlots({
+        slotId: placementName,
+        placementName,
+        targeting
+      }, channel)
+      onNewAdSlotsHook(placementName)
+    })
   }
 
   classes = () => {
