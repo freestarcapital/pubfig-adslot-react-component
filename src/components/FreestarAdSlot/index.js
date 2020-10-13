@@ -1,63 +1,23 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import Freestar from "./freestarWrapper"
 
-const getFreestar = () => {
-  return new Promise((resolve, reject) => {
-    const maxTries = 10
-    let retryCount = 0
-    const waitForFreestarReady = setInterval(() => {
-      if (window.freestar && window.googletag && window.googletag.apiReady) {
-        clearInterval(waitForFreestarReady)
-        resolve(window.freestar)
-      } else if (retryCount === maxTries) {
-        clearInterval(waitForFreestarReady)
-        reject(`freestar NOT ready after ${maxTries} tries`)
-      } else {
-        retryCount++
-      }
-    }, 10)
-  })
-}
+
 
 class FreestarAdSlot extends Component {
   componentDidMount () {
     const { publisher } = this.props
-    const qa = window.location.search.indexOf('fsdebug') > -1 ? '/qa' : ''
-    const url = `https://a.pub.network/${publisher}${qa}/pubfig.min.js`
+    const { placementName, onNewAdSlotsHook, channel, targeting } = this.props
 
-    const script = document.createElement('script')
-    script.src = url
-    script.async = true
-    document.body.appendChild(script)
-    script.onload = () => {
-      window.freestar.hitTime = Date.now()
-      window.freestar.queue = []
-      window.freestar.config = {
-        enabled_slots: []
-      }
-      this.newAdSlots()
-    }
+    Freestar.load(publisher);
+    Freestar.newAdSlot(placementName, onNewAdSlotsHook, channel, targeting)
   }
 
   componentWillUnmount () {
     const { placementName, onDeleteAdSlotsHook } = this.props
-    getFreestar().then(freestar => {
-      freestar.deleteAdSlots({ placementName })
-      onDeleteAdSlotsHook(placementName)
-    })
+    Freestar.deleteAdSlot( placementName, onDeleteAdSlotsHook)
   }
 
-  newAdSlots = () => {
-    const { placementName, onNewAdSlotsHook, channel, targeting } = this.props
-    getFreestar().then(freestar => {
-      freestar.newAdSlots({
-        slotId: placementName,
-        placementName,
-        targeting
-      }, channel)
-      onNewAdSlotsHook(placementName)
-    })
-  }
 
   classes = () => {
     const { classList } = this.props
