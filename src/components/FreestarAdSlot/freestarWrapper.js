@@ -48,7 +48,7 @@ class FreestarWrapper {
 
   refreshAdSlot (placementName, onAdRefreshHook) {
     window.freestar.queue.push(() => {
-      window.freestar.newAdSlots()
+      window.freestar.freestarReloadAdSlot(placementName)
       if (onAdRefreshHook) {
         onAdRefreshHook(placementName)
       }
