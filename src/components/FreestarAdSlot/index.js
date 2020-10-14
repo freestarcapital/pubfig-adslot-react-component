@@ -34,6 +34,14 @@ class FreestarAdSlot extends Component {
   }
 }
 
+FreestarAdSlot.setPageTargeting = (key,value) => {
+  Freestar.setPageTargeting(key,value)
+}
+
+FreestarAdSlot.clearPageTargeting = (key) => {
+  Freestar.clearPageTargeting(key)
+}
+
 FreestarAdSlot.propTypes = {
   publisher: PropTypes.string.isRequired,
   placementName: PropTypes.string.isRequired,
