@@ -61,13 +61,21 @@ An *optional* event hook that returns the `placementName` when the component **m
 **onDeleteAdSlotsHook**
 An *optional* event hook that returns the `placementName` when the component **unmounts**.
 
+### API Methods
+
+**FreestarAdSlot.setPageTargeting**
+Proxy for the GPT setTargeting call to set page level targeting. See [GPT documentation](https://developers.google.com/doubleclick-gpt/reference#googletag.PubAdsService_setTargeting) for more details
+
+**FreestarAdSlot.clearPageTargeting**
+Proxy for the GRP clearTargeting call to clear page level targeting. See [GPT documentation](https://developers.google.com/doubleclick-gpt/reference#googletag.PubAdsService_clearTargeting) for more details
+
 ### Glossary
 
 **placementName**
 A value acquired from Google Ad Manager (previously known as DFP/Adx), which will be provided by Freestar.
 
 **targeting**
-A set of targeting values for the ad unit placement. https://developers.google.com/doubleclick-gpt/guides/key-value-targeting
+A set of targeting values for the ad unit placement. See [GPT Documentation](https://developers.google.com/doubleclick-gpt/guides/key-value-targeting) for more details
 
 ### Develop
 
