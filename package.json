@@ -6,7 +6,7 @@
     "pubfig",
     "adslot-react-component"
   ],
-  "version": "1.1.0",
+  "version": "1.1.1",
   "private": false,
   "repository": {
     "type": "git",
@@ -27,7 +27,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "build-lib": "NODE_ENV=production && mkdir -p ./dist && rm -rf ./dist/* && npx babel src/components/FreestarAdSlot --out-dir dist --copy-files",
-    "publish": "npm publish --access public",
+    "publish-npm": "npm run build-lib && npm publish --access public",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
