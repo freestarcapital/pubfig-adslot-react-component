@@ -1,74 +1,81 @@
-
 class FreestarWrapper {
 
-  constructor() {
-    this.loaded = false;
-  }
-  get freestar() {
-    return this._freestar;
+  constructor () {
+    this.loaded = false
   }
 
-  get googletag() {
-    return this._googletag;
-  }
-
-  load(publisher) {
-    if (this.loaded === false){
-      this.loaded = true;
+  load (publisher) {
+    if (!this.loaded) {
+      this.loaded = true
       const qa = window.location.search.indexOf('fsdebug') > -1 ? '/qa' : ''
       const url = `https://a.pub.network/${publisher}${qa}/pubfig.min.js`
+
       window.freestar = window.freestar || {}
       window.freestar.hitTime = Date.now()
       window.freestar.queue =  window.freestar.queue || []
       window.freestar.config =  window.freestar.config || {}
-      window.freestar.config.enabled_slots = window.freestar.config.enabled_slots || [];
+      window.freestar.config.enabled_slots = window.freestar.config.enabled_slots || []
+
       const script = document.createElement('script')
       script.src = url
       script.async = true
       document.body.appendChild(script)
     }
-
   }
-  newAdSlot( placementName, onNewAdSlotsHook, channel, targeting) {
+
+  newAdSlot (placementName, onNewAdSlotsHook, channel, targeting) {
     window.freestar.queue.push(() => {
       window.freestar.newAdSlots({
         slotId: placementName,
         placementName,
         targeting
       }, channel)
-      if (onNewAdSlotsHook)
+      if (onNewAdSlotsHook) {
         onNewAdSlotsHook(placementName)
+      }
     })
 
   }
-  deleteAdSlot( placementName, onDeleteAdSlotsHook) {
+
+  deleteAdSlot (placementName, onDeleteAdSlotsHook) {
     window.freestar.queue.push(() => {
       window.freestar.deleteAdSlots({ placementName })
-      if ( onDeleteAdSlotsHook )
+      if (onDeleteAdSlotsHook) {
         onDeleteAdSlotsHook(placementName)
+      }
     })
   }
 
-  setPageTargeting( key, value) {
-    window.freestar = window.freestar || {};
+  refreshAdSlot (placementName, onAdRefreshHook) {
+    window.freestar.queue.push(() => {
+      window.freestar.freestarReloadAdSlot(placementName)
+      if (onAdRefreshHook) {
+        onAdRefreshHook(placementName)
+      }
+    })
+  }
+
+  setPageTargeting (key, value) {
+    window.freestar = window.freestar || {}
     window.freestar.queue =  window.freestar.queue || []
     window.freestar.queue.push(() => {
       window.googletag.pubads().setTargeting(key, value)
     })
   }
 
-  clearPageTargeting( key ) {
+  clearPageTargeting (key) {
     window.freestar = window.freestar || {}
     window.freestar.queue =  window.freestar.queue || []
     window.freestar.queue.push(() => {
-      if (key)
+      if (key) {
         window.googletag.pubads().clearTargeting(key)
-      else
+      } else {
         window.googletag.pubads().clearTargeting()
+      }
     })
   }
 }
 
 const Freestar = new FreestarWrapper()
 
-export default Freestar;
+export default Freestar
