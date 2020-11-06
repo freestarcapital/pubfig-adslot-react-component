@@ -3,7 +3,12 @@ class FreestarWrapper {
   constructor () {
     this.loaded = false
   }
-
+  log (level, ...msg)  {
+    let title = 'Pubfig React Plugin ', styles = 'background: #00C389; color: #fff; border-radius: 3px; padding: 3px';
+    if (freestar.debug >= level) {
+      console.info(`%c${title}`, styles, ...msg);
+    }
+  }
   load (publisher) {
     if (!this.loaded) {
       this.loaded = true
@@ -19,6 +24,7 @@ class FreestarWrapper {
       const script = document.createElement('script')
       script.src = url
       script.async = true
+      this.log(0,"========== LOADING Pubfig ==========")
       document.body.appendChild(script)
     }
   }
