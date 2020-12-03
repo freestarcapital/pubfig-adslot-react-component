@@ -1,17 +1,18 @@
 class FreestarWrapper {
 
   constructor () {
-    this.loaded = false
+    window.freestarReactCompontentLoaded = window.freestarReactCompontentLoaded || false
+    this.loaded = window.freestarReactCompontentLoaded
   }
   log (level, ...msg)  {
-    let title = 'Pubfig React Plugin ', styles = 'background: #00C389; color: #fff; border-radius: 3px; padding: 3px';
+    let title = 'Pubfig React Plugin ', styles = 'background: #00C389; color: #fff; border-radius: 3px; padding: 3px'
     if (freestar.debug >= level) {
       console.info(`%c${title}`, styles, ...msg);
     }
   }
   load (publisher) {
     if (!this.loaded) {
-      this.loaded = true
+      this.loaded = window.freestarReactCompontentLoaded = true
       const qa = window.location.search.indexOf('fsdebug') > -1 ? '/qa' : ''
       const url = `https://a.pub.network/${publisher}${qa}/pubfig.min.js`
 
