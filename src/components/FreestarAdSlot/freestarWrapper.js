@@ -2,10 +2,12 @@ class FreestarWrapper {
 
   constructor () {
     this.loaded = false
+    this.logEnabled = window.location.search.indexOf('fslog') > -1
   }
   log (level, ...msg)  {
     let title = 'Pubfig React Plugin ', styles = 'background: #00C389; color: #fff; border-radius: 3px; padding: 3px';
-    if (freestar.debug >= level) {
+
+    if (this.logEnabled) {
       console.info(`%c${title}`, styles, ...msg);
     }
   }
