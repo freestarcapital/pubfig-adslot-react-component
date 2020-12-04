@@ -8,8 +8,7 @@ class FreestarAdSlot extends Component {
   componentDidMount () {
     const { publisher } = this.props
     const { placementName, onNewAdSlotsHook, channel, targeting } = this.props
-
-    Freestar.load(publisher)
+    Freestar.init(publisher)
     Freestar.newAdSlot(placementName, onNewAdSlotsHook, channel, targeting)
   }
 

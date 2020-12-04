@@ -1,17 +1,10 @@
 class FreestarWrapper {
 
-  constructor () {
+  init(publisher) {
     window.freestarReactCompontentLoaded = window.freestarReactCompontentLoaded || false
     this.loaded = window.freestarReactCompontentLoaded
-    this.logEnabled = window.location.search.indexOf('fslog') > -1
-  }
-  log (level, ...msg)  {
-    let title = 'Pubfig React Plugin ', styles = 'background: #00C389; color: #fff; border-radius: 3px; padding: 3px'
-    if (this.logEnabled) {
-      console.info(`%c${title}`, styles, ...msg);
-    }
-  }
-  load (publisher) {
+    this.logEnabled = window.location.search.indexOf('fslog') > -1 ? true
+      : window.freestarReactCompontentLogEnabled ? window.freestarReactCompontentLogEnabled : false
     if (!this.loaded) {
       this.loaded = window.freestarReactCompontentLoaded = true
       const qa = window.location.search.indexOf('fsdebug') > -1 ? '/qa' : ''
@@ -30,7 +23,12 @@ class FreestarWrapper {
       document.body.appendChild(script)
     }
   }
-
+  log (level, ...msg)  {
+    let title = 'Pubfig React Plugin ', styles = 'background: #00C389; color: #fff; border-radius: 3px; padding: 3px'
+    if (this.logEnabled) {
+      console.info(`%c${title}`, styles, ...msg);
+    }
+  }
   newAdSlot (placementName, onNewAdSlotsHook, channel, targeting) {
     window.freestar.queue.push(() => {
       window.freestar.newAdSlots({
