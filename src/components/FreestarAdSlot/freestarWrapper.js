@@ -29,10 +29,6 @@ class FreestarWrapper {
       console.info(`%c${title}`, styles, ...msg);
     }
   }
-  load (publisher) {
-
-  }
-
   newAdSlot (placementName, onNewAdSlotsHook, channel, targeting) {
     window.freestar.queue.push(() => {
       window.freestar.newAdSlots({
