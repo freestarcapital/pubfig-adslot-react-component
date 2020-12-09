@@ -50,7 +50,7 @@ FreestarAdSlot.clearPageTargeting = (key) => {
 
 FreestarAdSlot.propTypes = {
   publisher: PropTypes.string.isRequired,
-  placementName: PropTypes.string,
+  placementName: PropTypes.string.isRequired,
   targeting: PropTypes.object,
   channel: PropTypes.string,
   classList: PropTypes.array,
