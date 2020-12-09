@@ -41,7 +41,7 @@ class FreestarWrapper {
       }
       else {
 
-        adSlot = window.googletag.defineSlot(adUnitPath, slotSize, placementName)
+        adSlot = window.googletag.defineSlot(adUnitPath, slotSize, placementName).addService(window.googletag.pubads())
         if (sizeMappings)
         {
           const sizeMappingArray = sizeMappings
@@ -52,7 +52,7 @@ class FreestarWrapper {
           adSlot.defineSizeMapping(sizeMappingArray)
 
         }
-        window.googletag.display(adSlot).addService(window.googletag.pubads())
+        window.googletag.display(adSlot)
 
       }
       if (onNewAdSlotsHook) {
