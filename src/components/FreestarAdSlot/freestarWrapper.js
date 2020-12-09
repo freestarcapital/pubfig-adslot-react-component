@@ -52,7 +52,7 @@ class FreestarWrapper {
           adSlot.defineSizeMapping(sizeMappingArray)
 
         }
-        window.googletag.display(adSlot)
+        window.googletag.display(adSlot).addService(window.googletag.pubads())
 
       }
       if (onNewAdSlotsHook) {
