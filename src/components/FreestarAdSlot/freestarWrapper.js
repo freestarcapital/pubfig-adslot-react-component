@@ -58,7 +58,7 @@ class FreestarWrapper {
           })
         }
         window.googletag.display(adSlot)
-        window.googletag.refresh(adSlot)
+        window.googletag.pubads().refresh(adSlot)
 
       }
       if (onNewAdSlotsHook) {
