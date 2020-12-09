@@ -42,8 +42,7 @@ class FreestarWrapper {
       else {
 
         adSlot = window.googletag.defineSlot(adUnitPath, slotSize, placementName).addService(window.googletag.pubads())
-        if (sizeMappings)
-        {
+        if (sizeMappings) {
           const sizeMappingArray = sizeMappings
             .reduce((mapping, size) => {
               return mapping.addSize(size.viewport, size.slot)
@@ -51,6 +50,12 @@ class FreestarWrapper {
             .build()
           adSlot.defineSizeMapping(sizeMappingArray)
 
+        }
+        if (targeting) {
+          Object.entries(targeting).forEach(entry => {
+            const [key, value] = entry;
+            adSlot.setTargeting(key, value);
+          })
         }
         window.googletag.display(adSlot)
 
