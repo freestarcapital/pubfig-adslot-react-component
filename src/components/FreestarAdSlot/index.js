@@ -8,19 +8,20 @@ class FreestarAdSlot extends Component {
   componentDidMount () {
     const { publisher } = this.props
     const { placementName, onNewAdSlotsHook, channel, targeting } = this.props
+    const { adUnitPath, slotSize, sizeMapping} = this.props;
     Freestar.init(publisher)
-    Freestar.newAdSlot(placementName, onNewAdSlotsHook, channel, targeting)
+    this.adSlot = Freestar.newAdSlot(placementName, onNewAdSlotsHook, channel, targeting, adUnitPath, slotSize, sizeMapping)
   }
 
   componentWillUnmount () {
     const { placementName, onDeleteAdSlotsHook } = this.props
-    Freestar.deleteAdSlot(placementName, onDeleteAdSlotsHook)
+    Freestar.deleteAdSlot(placementName, onDeleteAdSlotsHook, this.adSlot)
   }
 
   componentWillReceiveProps (nextProps) {
     const { placementName, onAdRefreshHook } = this.props
     if (nextProps.adRefresh !== this.props.adRefresh) {
-      Freestar.refreshAdSlot(placementName, onAdRefreshHook)
+      Freestar.refreshAdSlot(placementName, onAdRefreshHook, this.adSlot)
     }
   }
 
@@ -56,7 +57,15 @@ FreestarAdSlot.propTypes = {
   adRefresh: PropTypes.number,
   onNewAdSlotsHook: PropTypes.func,
   onDeleteAdSlotsHook: PropTypes.func,
-  onAdRefreshHook: PropTypes.func
+  onAdRefreshHook: PropTypes.func,
+  adUnitPath : PropTypes.string,
+  slotSize : PropTypes.oneOfType([PropTypes.array, PropTypes.string]),
+  sizeMapping: PropTypes.arrayOf(
+    PropTypes.shape({
+      viewport: PropTypes.array,
+      slot: PropTypes.array
+    })
+  )
 }
 
 FreestarAdSlot.defaultProps = {
@@ -68,7 +77,10 @@ FreestarAdSlot.defaultProps = {
   adRefresh: 0,
   onNewAdSlotsHook: () => {},
   onDeleteAdSlotsHook: () => {},
-  onAdRefreshHook: () => {}
+  onAdRefreshHook: () => {},
+  adUnitPath: null,
+  slotSize : null,
+  sizeMapping: null
 }
 
 export default FreestarAdSlot
