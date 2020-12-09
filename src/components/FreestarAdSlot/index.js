@@ -14,12 +14,12 @@ class FreestarAdSlot extends Component {
   }
 
   componentWillUnmount () {
-    const { placementName, onDeleteAdSlotsHook, adUnitPath } = this.props
+    const { placementName, onDeleteAdSlotsHook } = this.props
     Freestar.deleteAdSlot(placementName, onDeleteAdSlotsHook, this.adSlot)
   }
 
   componentWillReceiveProps (nextProps) {
-    const { placementName, onAdRefreshHook, adUnitPath } = this.props
+    const { placementName, onAdRefreshHook } = this.props
     if (nextProps.adRefresh !== this.props.adRefresh) {
       Freestar.refreshAdSlot(placementName, onAdRefreshHook, this.adSlot)
     }

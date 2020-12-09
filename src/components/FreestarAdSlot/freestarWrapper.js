@@ -50,8 +50,9 @@ class FreestarWrapper {
             }, window.googletag.sizeMapping())
             .build()
           adSlot.defineSizeMapping(sizeMappingArray)
-          window.googletag.display(adSlot)
+
         }
+        window.googletag.display(adSlot)
 
       }
       if (onNewAdSlotsHook) {
