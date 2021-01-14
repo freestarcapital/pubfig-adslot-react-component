@@ -1,3 +1,5 @@
+// Load the full build.
+const _ = import('lodash');
 class FreestarWrapper {
   constructor() {
     this.pageKeyValuePairs = {}
@@ -11,8 +13,7 @@ class FreestarWrapper {
       console.log(message)
       return [];
     }
-    const keyValueConfigMapping = await response.json();
-    return keyValueConfigMapping;
+    return await response.json();
   }
   async init(publisher, keyValueConfigMappingLocation) {
     window.freestarReactCompontentLoaded = window.freestarReactCompontentLoaded || false
@@ -50,11 +51,11 @@ class FreestarWrapper {
   /* example mapping
     [
       {
-        kvps : { site : 'fanatics', section: 'NBA'}
+        keyValuePairs : { site : 'fanatics', section: 'NBA'}
         placementMap : { placement-1 : 'NBA-placement-1', placement-2 : 'NBA-placement-2'}
       },
       {
-        kvps : { site : 'fanatics', section: 'NFL'}
+        keyValuePairs : { site : 'fanatics', section: 'NFL'}
         placementMap : { placement-1 : 'NFL-placement-1', placement-2 : 'NFL-placement-2'}
       }
     ]
@@ -68,20 +69,28 @@ class FreestarWrapper {
   getMappedPlacementName (placementName, targeting) {
     const keyValuePairs = {...this.pageKeyValuePairs, ...targeting}
     const matchedMappings = this.keyValueConfigMappings.filter((mapping) => {
-      const mappingKVPs = mapping.kvps || {}
-      for ( let key in mappingKVPs) {
-        //TODO need to do object comparison here for when arrays are passed
-          if (keyValuePairs[key] !== mappingKVPs[key]){
-            return false
+      const mappedKeyValuePairs = mapping['keyValuePairs'] || {}
+      for ( let key in mappedKeyValuePairs) {
+          if ( mappedKeyValuePairs.hasOwnProperty(key)) {
+            // if the values are arrays we need to sort them so that they can be directly compared
+            let passedValue = Array.isArray(keyValuePairs[key]) ? _.sortBy(keyValuePairs[key]) : keyValuePairs[key]
+            let mappedValue = Array.isArray(mappedKeyValuePairs[key]) ? _.sortBy(mappedKeyValuePairs[key]) : mappedKeyValuePairs[key]
+            if (!_.isEqual(passedValue,mappedValue)){
+              return false
+            }
+
           }
       }
       return true
 
     })
-    // we will use the first match
-    // TODO: grab the one with the most keys as it would be the most specific
     if (matchedMappings.length){
-      const matchedMapping = matchedMappings[0]
+      let sortedMappings = _.sortBy(matchedMappings, (mapping) => {
+        return mapping['keyValuePairs'].length
+      })
+      //lodash sorts asc by default
+      sortedMappings.reverse();
+      const matchedMapping = sortedMappings[0]
       const placementMap = matchedMapping['placementMap']
       return placementMap[placementName] || placementMap
     }
