@@ -1,9 +1,9 @@
 class FreestarWrapper {
   constructor() {
     this.pageKeyValuePairs = {}
-    this.placementMappings = []
+    this.keyValueConfigMappings = []
   }
-  async fetchPlacementMapping(placementMappingLocation) {
+  async fetchKeyValueConfigMapping(placementMappingLocation) {
     const response = await fetch(placementMappingLocation)
 
     if (!response.ok) {
@@ -11,10 +11,10 @@ class FreestarWrapper {
       console.log(message)
       return [];
     }
-    const placementMapping = await response.json();
-    return placementMapping;
+    const keyValueConfigMapping = await response.json();
+    return keyValueConfigMapping;
   }
-  async init(publisher, placementMappingLocation) {
+  async init(publisher, keyValueConfigMappingLocation) {
     window.freestarReactCompontentLoaded = window.freestarReactCompontentLoaded || false
     this.loaded = window.freestarReactCompontentLoaded
     this.logEnabled = window.location.search.indexOf('fslog') > -1 ? true
@@ -35,8 +35,8 @@ class FreestarWrapper {
       script.async = true
       this.log(0,"========== LOADING Pubfig ==========")
       document.body.appendChild(script)
-      if (placementMappingLocation) {
-        this.placementMappings = await this.fetchPlacementMapping(placementMappingLocation)
+      if (keyValueConfigMappingLocation) {
+        this.keyValueConfigMappings = await this.fetchKeyValueConfigMapping(keyValueConfigMappingLocation)
       }
     }
   }
@@ -66,11 +66,12 @@ class FreestarWrapper {
    * @returns {*}
    */
   getMappedPlacementName (placementName, targeting) {
-    const kvps = {...this.pageKeyValuePairs, ...targeting}
-    const matchedMappings = this.placementMappings.filter((mapping) => {
+    const keyValuePairs = {...this.pageKeyValuePairs, ...targeting}
+    const matchedMappings = this.keyValueConfigMappings.filter((mapping) => {
       const mappingKVPs = mapping.kvps || {}
       for ( let key in mappingKVPs) {
-          if (kvps[key] !== mappingKVPs[key]){
+        //TODO need to do object comparison here for when arrays are passed
+          if (keyValuePairs[key] !== mappingKVPs[key]){
             return false
           }
       }
@@ -78,9 +79,10 @@ class FreestarWrapper {
 
     })
     // we will use the first match
+    // TODO: grab the one with the most keys as it would be the most specific
     if (matchedMappings.length){
       const matchedMapping = matchedMappings[0]
-      const placementMap = matchedMapping.placementMap
+      const placementMap = matchedMapping['placementMap']
       return placementMap[placementName] || placementMap
     }
     return placementName
@@ -126,9 +128,10 @@ class FreestarWrapper {
 
   }
 
-  deleteAdSlot (placementName, targeting,  onDeleteAdSlotsHook, adSlot) {
+  deleteAdSlot (placementName, targeting, onDeleteAdSlotsHook, adSlot) {
     window.freestar.queue.push(() => {
       if(!adSlot){
+        placementName = this.getMappedPlacementName(placementName, targeting)
         window.freestar.deleteAdSlots({ placementName })
       }
       else {
