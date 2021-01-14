@@ -1,5 +1,5 @@
 // Load the full build.
-const _ = import('lodash');
+import _ from 'lodash';
 class FreestarWrapper {
   constructor() {
     this.pageKeyValuePairs = {}
