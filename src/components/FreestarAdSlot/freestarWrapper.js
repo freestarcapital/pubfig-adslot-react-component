@@ -3,6 +3,7 @@ import _ from 'lodash';
 class FreestarWrapper {
   constructor() {
     this.pageKeyValuePairs = {}
+    this.mappingConfig = {}
     this.keyValueConfigMappings = []
   }
   async fetchKeyValueConfigMapping(placementMappingLocation) {
@@ -14,7 +15,9 @@ class FreestarWrapper {
       return [];
     }
     try{
-      return await response.json();
+      this.mappingConfig = await response.json();
+
+      return this.mappingConfig['mappings']
     }
     catch (err)
     {
@@ -57,16 +60,19 @@ class FreestarWrapper {
   }
 
   /* example mapping
-    [
-      {
-        "keyValuePairs" : { "site" : 'fanatics', "section": 'NBA'}
-        "placementMap" : { "placement-1" : 'NBA-placement-1', "placement-2" : 'NBA-placement-2'}
-      },
-      {
-        "keyValuePairs" : { "site" : 'fanatics', "section": 'NFL'}
-        "placementMap" : { "placement-1" : 'NFL-placement-1', placement-2 : 'NFL-placement-2'}
-      }
-    ]
+    {
+      mappings:
+        [
+          {
+            "keyValuePairs" : { "site" : 'fanatics', "section": 'NBA'}
+            "placementMap" : { "placement-1" : 'NBA-placement-1', "placement-2" : 'NBA-placement-2'}
+          },
+          {
+            "keyValuePairs" : { "site" : 'fanatics', "section": 'NFL'}
+            "placementMap" : { "placement-1" : 'NFL-placement-1', placement-2 : 'NFL-placement-2'}
+          }
+        ]
+    }
    */
   /**
    *
