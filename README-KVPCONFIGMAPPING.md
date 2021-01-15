@@ -46,7 +46,7 @@ class Demo extends Component {
           onNewAdSlotsHook={(placementName) => console.log('creating ad', placementName)}
           onDeleteAdSlotsHook={(placementName) => console.log('destroying ad', placementName)}
           onAdRefreshHook={(placementName) => console.log('refreshing ad', placementName)}
-          placementMappingLocation = "https://api.jsonbin.io/b/6000f76fe31fbc3bdef3d725/1"
+          keyValueConfigMappingURL = "https://api.jsonbin.io/b/6000f76fe31fbc3bdef3d725/1"
         />
         <button onClick={this.onAdRefresh}>Trigger Refresh</button>
       </div>
@@ -58,5 +58,5 @@ export default Demo
 ```
 
 ### Additional Props
-**placementMappingLocation**
+**keyValueConfigMappingURL**
 An *optional* string with the full url to the Key Value Config Mapping file. Consult with your Freestar Account Manager for more information on how to have this file setup
