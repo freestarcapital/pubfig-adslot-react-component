@@ -34,7 +34,7 @@ class FreestarAdSlot extends Component {
     const { placementName } = this.props
     return (
       <div>
-        <div className={this.classes()} id={placementName}></div>
+        <div className={this.classes()} id={Freestar.getMappedPlacementName(placementName)}></div>
       </div>
     )
   }

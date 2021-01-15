@@ -59,12 +59,12 @@ class FreestarWrapper {
   /* example mapping
     [
       {
-        keyValuePairs : { site : 'fanatics', section: 'NBA'}
-        placementMap : { placement-1 : 'NBA-placement-1', placement-2 : 'NBA-placement-2'}
+        "keyValuePairs" : { "site" : 'fanatics', "section": 'NBA'}
+        "placementMap" : { "placement-1" : 'NBA-placement-1', "placement-2" : 'NBA-placement-2'}
       },
       {
-        keyValuePairs : { site : 'fanatics', section: 'NFL'}
-        placementMap : { placement-1 : 'NFL-placement-1', placement-2 : 'NFL-placement-2'}
+        "keyValuePairs" : { "site" : 'fanatics', "section": 'NFL'}
+        "placementMap" : { "placement-1" : 'NFL-placement-1', placement-2 : 'NFL-placement-2'}
       }
     ]
    */
@@ -100,7 +100,7 @@ class FreestarWrapper {
       sortedMappings.reverse();
       const matchedMapping = sortedMappings[0]
       const placementMap = matchedMapping['placementMap']
-      return placementMap[placementName] || placementMap
+      return placementMap[placementName] || placementName
     }
     return placementName
   }
