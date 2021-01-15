@@ -1,6 +1,6 @@
 # Bypassing Freestar Placements
 
-The Frestar React Component allows for the ability to bypass relying on Freestar placements. 
+The Freestar React Component allows for the ability to bypass relying on Freestar placements. 
 Note: Using this option will not allow Freestar to monetize the adUnit with header bidding demand nor allow Freestar to
 manage the ad unit. 
 

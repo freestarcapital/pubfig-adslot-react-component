@@ -5,23 +5,29 @@ import Freestar from "./freestarWrapper"
 
 
 class FreestarAdSlot extends Component {
-  componentDidMount () {
-    const { publisher } = this.props
-    const { placementName, onNewAdSlotsHook, channel, targeting } = this.props
+  constructor(props) {
+    const { placementName } = props
+    super(props);
+    this.state = { placementName : placementName }
+  }
+
+  async componentDidMount () {
+    const { placementName, onNewAdSlotsHook, channel, targeting, keyValueConfigMappingURL, publisher } = this.props
     const { adUnitPath, slotSize, sizeMapping} = this.props;
-    Freestar.init(publisher)
+    await Freestar.init(publisher, keyValueConfigMappingURL)
+    this.setState({placementName: Freestar.getMappedPlacementName(placementName,targeting)})
     this.adSlot = Freestar.newAdSlot(placementName, onNewAdSlotsHook, channel, targeting, adUnitPath, slotSize, sizeMapping)
   }
 
   componentWillUnmount () {
-    const { placementName, onDeleteAdSlotsHook } = this.props
-    Freestar.deleteAdSlot(placementName, onDeleteAdSlotsHook, this.adSlot)
+    const { placementName, onDeleteAdSlotsHook, targeting } = this.props
+    Freestar.deleteAdSlot(placementName, targeting, onDeleteAdSlotsHook, this.adSlot)
   }
 
   componentWillReceiveProps (nextProps) {
-    const { placementName, onAdRefreshHook } = this.props
+    const { placementName, onAdRefreshHook, targeting } = this.props
     if (nextProps.adRefresh !== this.props.adRefresh) {
-      Freestar.refreshAdSlot(placementName, onAdRefreshHook, this.adSlot)
+      Freestar.refreshAdSlot(placementName, targeting, onAdRefreshHook, this.adSlot)
     }
   }
 
@@ -31,10 +37,10 @@ class FreestarAdSlot extends Component {
   }
 
   render() {
-    const { placementName } = this.props
+    const { placementName, targeting, placementMappingLocation } = this.props
     return (
       <div>
-        <div className={this.classes()} id={placementName}></div>
+        <div className={this.classes()} id={this.state.placementName}></div>
       </div>
     )
   }
@@ -65,7 +71,8 @@ FreestarAdSlot.propTypes = {
       viewport: PropTypes.array,
       slot: PropTypes.array
     })
-  )
+  ),
+  keyValueConfigMappingURL: PropTypes.string
 }
 
 FreestarAdSlot.defaultProps = {
@@ -80,7 +87,8 @@ FreestarAdSlot.defaultProps = {
   onAdRefreshHook: () => {},
   adUnitPath: null,
   slotSize : null,
-  sizeMapping: null
+  sizeMapping: null,
+  keyValueConfigMappingURL: null
 }
 
 export default FreestarAdSlot

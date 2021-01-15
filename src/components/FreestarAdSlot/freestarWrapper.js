@@ -1,6 +1,32 @@
+// Load the full build.
+import _ from 'lodash';
 class FreestarWrapper {
+  constructor() {
+    this.pageKeyValuePairs = {}
+    this.mappingConfig = {}
+    this.keyValueConfigMappings = []
+  }
+  async fetchKeyValueConfigMapping(placementMappingLocation) {
+    const response = await fetch(placementMappingLocation)
 
-  init(publisher) {
+    if (response.status !== 200) {
+      const message = `An error has occurred fetching keyValueConfigMapping: ${response.status}`;
+      console.log(message)
+      return [];
+    }
+    try{
+      this.mappingConfig = await response.json();
+
+      return this.mappingConfig['mappings']
+    }
+    catch (err)
+    {
+      const message = `An error has occurred fetching keyValueConfigMapping`;
+      console.log(message, err)
+      return [];
+    }
+  }
+  async init(publisher, keyValueConfigMappingLocation) {
     window.freestarReactCompontentLoaded = window.freestarReactCompontentLoaded || false
     this.loaded = window.freestarReactCompontentLoaded
     this.logEnabled = window.location.search.indexOf('fslog') > -1 ? true
@@ -21,6 +47,9 @@ class FreestarWrapper {
       script.async = true
       this.log(0,"========== LOADING Pubfig ==========")
       document.body.appendChild(script)
+      if (keyValueConfigMappingLocation) {
+        this.keyValueConfigMappings = await this.fetchKeyValueConfigMapping(keyValueConfigMappingLocation)
+      }
     }
   }
   log (level, ...msg)  {
@@ -29,10 +58,64 @@ class FreestarWrapper {
       console.info(`%c${title}`, styles, ...msg)
     }
   }
+
+  /* example mapping
+    {
+      mappings:
+        [
+          {
+            "keyValuePairs" : { "site" : 'fanatics', "section": 'NBA'}
+            "placementMap" : { "placement-1" : 'NBA-placement-1', "placement-2" : 'NBA-placement-2'}
+          },
+          {
+            "keyValuePairs" : { "site" : 'fanatics', "section": 'NFL'}
+            "placementMap" : { "placement-1" : 'NFL-placement-1', placement-2 : 'NFL-placement-2'}
+          }
+        ]
+    }
+   */
+  /**
+   *
+   * @param placementName
+   * @param targeting
+   * @param placementMappingLocation
+   * @returns {*}
+   */
+   getMappedPlacementName(placementName, targeting) {
+    const keyValuePairs = {...this.pageKeyValuePairs, ...targeting}
+    const matchedMappings = this.keyValueConfigMappings.filter((mapping) => {
+      const mappedKeyValuePairs = mapping['keyValuePairs'] || {}
+      for (let key in mappedKeyValuePairs) {
+        if (mappedKeyValuePairs.hasOwnProperty(key)) {
+          // if the values are arrays we need to sort them so that they can be directly compared
+          let passedValue = Array.isArray(keyValuePairs[key]) ? _.sortBy(keyValuePairs[key]) : keyValuePairs[key]
+          let mappedValue = Array.isArray(mappedKeyValuePairs[key]) ? _.sortBy(mappedKeyValuePairs[key]) : mappedKeyValuePairs[key]
+          if (!_.isEqual(passedValue, mappedValue)) {
+            return false
+          }
+
+        }
+      }
+      return true
+
+    })
+    if (matchedMappings.length) {
+      let sortedMappings = _.sortBy(matchedMappings, (mapping) => {
+        return mapping['keyValuePairs'].length
+      })
+      //lodash sorts asc by default
+      sortedMappings.reverse();
+      const matchedMapping = sortedMappings[0]
+      const placementMap = matchedMapping['placementMap']
+      return placementMap[placementName] || placementName
+    }
+    return placementName
+  }
   newAdSlot (placementName, onNewAdSlotsHook, channel, targeting, adUnitPath, slotSize, sizeMappings) {
     window.freestar.queue.push(() => {
       let adSlot;
       if (!adUnitPath) {
+        placementName = this.getMappedPlacementName(placementName, targeting)
         window.freestar.newAdSlots({
             slotId: placementName,
             placementName,
@@ -69,9 +152,10 @@ class FreestarWrapper {
 
   }
 
-  deleteAdSlot (placementName, onDeleteAdSlotsHook, adSlot) {
+  deleteAdSlot (placementName, targeting, onDeleteAdSlotsHook, adSlot) {
     window.freestar.queue.push(() => {
       if(!adSlot){
+        placementName = this.getMappedPlacementName(placementName, targeting)
         window.freestar.deleteAdSlots({ placementName })
       }
       else {
@@ -83,9 +167,10 @@ class FreestarWrapper {
     })
   }
 
-  refreshAdSlot (placementName, onAdRefreshHook, adSlot) {
+  refreshAdSlot (placementName, targeting, onAdRefreshHook, adSlot) {
     window.freestar.queue.push(() => {
       if(!adSlot){
+        placementName = this.getMappedPlacementName(placementName, targeting)
         window.freestar.freestarReloadAdSlot(placementName)
       }
       else {
@@ -103,6 +188,7 @@ class FreestarWrapper {
     window.freestar.queue.push(() => {
       window.googletag.pubads().setTargeting(key, value)
     })
+    this.pageKeyValuePairs[key] = value
   }
 
   clearPageTargeting (key) {
@@ -115,6 +201,12 @@ class FreestarWrapper {
         window.googletag.pubads().clearTargeting()
       }
     })
+    if (key) {
+      delete this.pageKeyValuePairs[key]
+    } else {
+      this.pageKeyValuePairs = {};
+    }
+
   }
 }
 
