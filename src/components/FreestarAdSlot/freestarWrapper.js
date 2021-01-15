@@ -72,27 +72,31 @@ class FreestarWrapper {
    *
    * @param placementName
    * @param targeting
+   * @param placementMappingLocation
    * @returns {*}
    */
-  getMappedPlacementName (placementName, targeting) {
+  async getMappedPlacementName(placementName, targeting, placementMappingLocation) {
     const keyValuePairs = {...this.pageKeyValuePairs, ...targeting}
+    if (placementMappingLocation && this.keyValueConfigMappings.length === 0)  {
+      this.keyValueConfigMappings = await this.fetchKeyValueConfigMapping(placementMappingLocation)
+    }
     const matchedMappings = this.keyValueConfigMappings.filter((mapping) => {
       const mappedKeyValuePairs = mapping['keyValuePairs'] || {}
-      for ( let key in mappedKeyValuePairs) {
-          if ( mappedKeyValuePairs.hasOwnProperty(key)) {
-            // if the values are arrays we need to sort them so that they can be directly compared
-            let passedValue = Array.isArray(keyValuePairs[key]) ? _.sortBy(keyValuePairs[key]) : keyValuePairs[key]
-            let mappedValue = Array.isArray(mappedKeyValuePairs[key]) ? _.sortBy(mappedKeyValuePairs[key]) : mappedKeyValuePairs[key]
-            if (!_.isEqual(passedValue,mappedValue)){
-              return false
-            }
-
+      for (let key in mappedKeyValuePairs) {
+        if (mappedKeyValuePairs.hasOwnProperty(key)) {
+          // if the values are arrays we need to sort them so that they can be directly compared
+          let passedValue = Array.isArray(keyValuePairs[key]) ? _.sortBy(keyValuePairs[key]) : keyValuePairs[key]
+          let mappedValue = Array.isArray(mappedKeyValuePairs[key]) ? _.sortBy(mappedKeyValuePairs[key]) : mappedKeyValuePairs[key]
+          if (!_.isEqual(passedValue, mappedValue)) {
+            return false
           }
+
+        }
       }
       return true
 
     })
-    if (matchedMappings.length){
+    if (matchedMappings.length) {
       let sortedMappings = _.sortBy(matchedMappings, (mapping) => {
         return mapping['keyValuePairs'].length
       })
