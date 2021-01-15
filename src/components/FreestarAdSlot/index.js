@@ -5,13 +5,17 @@ import Freestar from "./freestarWrapper"
 
 
 class FreestarAdSlot extends Component {
-  async componentWillMount() {
-    const { publisher, placementMappingLocation } = this.props
-    await Freestar.init(publisher, placementMappingLocation)
+  constructor(props) {
+    const { placementName } = props
+    super(props);
+    this.state = { placementName : placementName }
   }
-  componentDidMount () {
-    const { placementName, onNewAdSlotsHook, channel, targeting } = this.props
+
+  async componentDidMount () {
+    const { placementName, onNewAdSlotsHook, channel, targeting, placementMappingLocation, publisher } = this.props
     const { adUnitPath, slotSize, sizeMapping} = this.props;
+    await Freestar.init(publisher, placementMappingLocation)
+    this.setState({placementName: Freestar.getMappedPlacementName(placementName,targeting)})
     this.adSlot = Freestar.newAdSlot(placementName, onNewAdSlotsHook, channel, targeting, adUnitPath, slotSize, sizeMapping)
   }
 
@@ -36,7 +40,7 @@ class FreestarAdSlot extends Component {
     const { placementName, targeting, placementMappingLocation } = this.props
     return (
       <div>
-        <div className={this.classes()} id={Freestar.getMappedPlacementName(placementName, targeting, placementMappingLocation)}></div>
+        <div className={this.classes()} id={this.state.placementName}></div>
       </div>
     )
   }

@@ -75,11 +75,8 @@ class FreestarWrapper {
    * @param placementMappingLocation
    * @returns {*}
    */
-  async getMappedPlacementName(placementName, targeting, placementMappingLocation) {
+   getMappedPlacementName(placementName, targeting) {
     const keyValuePairs = {...this.pageKeyValuePairs, ...targeting}
-    if (placementMappingLocation && this.keyValueConfigMappings.length === 0)  {
-      this.keyValueConfigMappings = await this.fetchKeyValueConfigMapping(placementMappingLocation)
-    }
     const matchedMappings = this.keyValueConfigMappings.filter((mapping) => {
       const mappedKeyValuePairs = mapping['keyValuePairs'] || {}
       for (let key in mappedKeyValuePairs) {
