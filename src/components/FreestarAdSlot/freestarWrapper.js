@@ -8,12 +8,20 @@ class FreestarWrapper {
   async fetchKeyValueConfigMapping(placementMappingLocation) {
     const response = await fetch(placementMappingLocation)
 
-    if (!response.ok) {
-      const message = `An error has occurred fetching placementMapping: ${response.status}`;
+    if (response.status !== 200) {
+      const message = `An error has occurred fetching keyValueConfigMapping: ${response.status}`;
       console.log(message)
       return [];
     }
-    return await response.json();
+    try{
+      return await response.json();
+    }
+    catch (err)
+    {
+      const message = `An error has occurred fetching keyValueConfigMapping`;
+      console.log(message, err)
+      return [];
+    }
   }
   async init(publisher, keyValueConfigMappingLocation) {
     window.freestarReactCompontentLoaded = window.freestarReactCompontentLoaded || false
