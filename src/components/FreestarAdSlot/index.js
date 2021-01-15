@@ -5,11 +5,13 @@ import Freestar from "./freestarWrapper"
 
 
 class FreestarAdSlot extends Component {
-  async componentDidMount () {
-    const { publisher } = this.props
-    const { placementName, onNewAdSlotsHook, channel, targeting } = this.props
-    const { adUnitPath, slotSize, sizeMapping, placementMappingLocation} = this.props;
+  async componentWillMount() {
+    const { publisher, placementMappingLocation } = this.props
     await Freestar.init(publisher, placementMappingLocation)
+  }
+  componentDidMount () {
+    const { placementName, onNewAdSlotsHook, channel, targeting } = this.props
+    const { adUnitPath, slotSize, sizeMapping} = this.props;
     this.adSlot = Freestar.newAdSlot(placementName, onNewAdSlotsHook, channel, targeting, adUnitPath, slotSize, sizeMapping)
   }
 
