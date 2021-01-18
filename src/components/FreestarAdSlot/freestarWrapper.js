@@ -1,5 +1,6 @@
 // Load the full build.
-import _ from 'lodash';
+import isEqual from 'lodash.isequal'
+import sortBy from 'lodash.sortby'
 class FreestarWrapper {
   constructor() {
     this.pageKeyValuePairs = {}
@@ -88,9 +89,9 @@ class FreestarWrapper {
       for (let key in mappedKeyValuePairs) {
         if (mappedKeyValuePairs.hasOwnProperty(key)) {
           // if the values are arrays we need to sort them so that they can be directly compared
-          let passedValue = Array.isArray(keyValuePairs[key]) ? _.sortBy(keyValuePairs[key]) : keyValuePairs[key]
-          let mappedValue = Array.isArray(mappedKeyValuePairs[key]) ? _.sortBy(mappedKeyValuePairs[key]) : mappedKeyValuePairs[key]
-          if (!_.isEqual(passedValue, mappedValue)) {
+          let passedValue = Array.isArray(keyValuePairs[key]) ? sortBy(keyValuePairs[key]) : keyValuePairs[key]
+          let mappedValue = Array.isArray(mappedKeyValuePairs[key]) ? sortBy(mappedKeyValuePairs[key]) : mappedKeyValuePairs[key]
+          if (!isEqual(passedValue, mappedValue)) {
             return false
           }
 
@@ -100,7 +101,7 @@ class FreestarWrapper {
 
     })
     if (matchedMappings.length) {
-      let sortedMappings = _.sortBy(matchedMappings, (mapping) => {
+      let sortedMappings = sortBy(matchedMappings, (mapping) => {
         return mapping['keyValuePairs'].length
       })
       //lodash sorts asc by default
