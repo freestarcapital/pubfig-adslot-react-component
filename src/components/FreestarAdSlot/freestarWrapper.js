@@ -6,6 +6,7 @@ class FreestarWrapper {
     this.pageKeyValuePairs = {}
     this.mappingConfig = {}
     this.keyValueConfigMappings = []
+    this.keyValueConfigMappingLocation = ''
   }
   async fetchKeyValueConfigMapping(placementMappingLocation) {
     const response = await fetch(placementMappingLocation)
@@ -34,6 +35,7 @@ class FreestarWrapper {
       : window.freestarReactCompontentLogEnabled ? window.freestarReactCompontentLogEnabled : false
     if (!this.loaded) {
       this.loaded = window.freestarReactCompontentLoaded = true
+      this.keyValueConfigMappingLocation = keyValueConfigMappingLocation
       const qa = window.location.search.indexOf('fsdebug') > -1 ? '/qa' : ''
       const url = `https://a.pub.network/${publisher}${qa}/pubfig.min.js`
 
@@ -48,7 +50,7 @@ class FreestarWrapper {
       script.async = true
       this.log(0,"========== LOADING Pubfig ==========")
       document.body.appendChild(script)
-      if (keyValueConfigMappingLocation) {
+      if (keyValueConfigMappingLocation && this.keyValueConfigMappings.length === 0) {
         this.keyValueConfigMappings = await this.fetchKeyValueConfigMapping(keyValueConfigMappingLocation)
       }
     }
@@ -82,8 +84,12 @@ class FreestarWrapper {
    * @param placementMappingLocation
    * @returns {*}
    */
-   getMappedPlacementName(placementName, targeting) {
+  async getMappedPlacementName(placementName, targeting) {
     const keyValuePairs = {...this.pageKeyValuePairs, ...targeting}
+    if (this.keyValueConfigMappingLocation && this.keyValueConfigMappings.length === 0) {
+      this.keyValueConfigMappings = await this.fetchKeyValueConfigMapping(this.keyValueConfigMappingLocation)
+    }
+
     const matchedMappings = this.keyValueConfigMappings.filter((mapping) => {
       const mappedKeyValuePairs = mapping['keyValuePairs'] || {}
       for (let key in mappedKeyValuePairs) {
@@ -113,10 +119,10 @@ class FreestarWrapper {
     return placementName
   }
   newAdSlot (placementName, onNewAdSlotsHook, channel, targeting, adUnitPath, slotSize, sizeMappings) {
-    window.freestar.queue.push(() => {
+    window.freestar.queue.push(async () => {
       let adSlot;
       if (!adUnitPath) {
-        placementName = this.getMappedPlacementName(placementName, targeting)
+        placementName = await this.getMappedPlacementName(placementName, targeting)
         window.freestar.newAdSlots({
             slotId: placementName,
             placementName,
@@ -154,9 +160,9 @@ class FreestarWrapper {
   }
 
   deleteAdSlot (placementName, targeting, onDeleteAdSlotsHook, adSlot) {
-    window.freestar.queue.push(() => {
+    window.freestar.queue.push(async () => {
       if(!adSlot){
-        placementName = this.getMappedPlacementName(placementName, targeting)
+        placementName = await this.getMappedPlacementName(placementName, targeting)
         window.freestar.deleteAdSlots({ placementName })
       }
       else {
@@ -169,9 +175,9 @@ class FreestarWrapper {
   }
 
   refreshAdSlot (placementName, targeting, onAdRefreshHook, adSlot) {
-    window.freestar.queue.push(() => {
+    window.freestar.queue.push(async() => {
       if(!adSlot){
-        placementName = this.getMappedPlacementName(placementName, targeting)
+        placementName = await this.getMappedPlacementName(placementName, targeting)
         window.freestar.freestarReloadAdSlot(placementName)
       }
       else {

@@ -15,7 +15,7 @@ class FreestarAdSlot extends Component {
     const { placementName, onNewAdSlotsHook, channel, targeting, keyValueConfigMappingURL, publisher } = this.props
     const { adUnitPath, slotSize, sizeMapping} = this.props;
     await Freestar.init(publisher, keyValueConfigMappingURL)
-    this.setState({placementName: Freestar.getMappedPlacementName(placementName,targeting)})
+    this.setState({placementName: await Freestar.getMappedPlacementName(placementName,targeting)})
     this.adSlot = Freestar.newAdSlot(placementName, onNewAdSlotsHook, channel, targeting, adUnitPath, slotSize, sizeMapping)
   }
 
