@@ -104,9 +104,11 @@ A set of targeting values for the ad unit placement. See [GPT Documentation](htt
 If you would like to bypass Freestar Ad placements and render GAM ad units yourself directly please follow the instructions [here](README-BYPASS.md)
 
 
-### Develop
+### Developer instructions
 
-```sh
-npm install
-npm start
-```
+To publish your changes to npm do the following:
+
+- PR your changes to Master
+- Once approved, merge your branch to master
+- Switch to the master branch and run the build `npm run build`
+- Publish the package using np `np major|minor|patch`  
