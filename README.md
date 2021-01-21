@@ -1,5 +1,7 @@
 # Freestar Pubfig Ad Slot React Component
 
+## NOTE: As of v1.1, the prerequisite of the core Pubfig code loaded in the HEAD is no longer required.
+
 ### Install
 
 ```sh
