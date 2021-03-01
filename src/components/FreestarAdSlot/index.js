@@ -54,6 +54,10 @@ FreestarAdSlot.clearPageTargeting = (key) => {
   Freestar.clearPageTargeting(key)
 }
 
+FreestarAdSlot.trackPageview = () => {
+  Freestar.trackPageview()
+}
+
 FreestarAdSlot.propTypes = {
   publisher: PropTypes.string.isRequired,
   placementName: PropTypes.string.isRequired,
