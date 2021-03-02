@@ -213,7 +213,14 @@ class FreestarWrapper {
     } else {
       this.pageKeyValuePairs = {};
     }
+  }
 
+  trackPageview () {
+    window.freestar = window.freestar || {}
+    window.freestar.queue =  window.freestar.queue || []
+    window.freestar.queue.push(() => {
+      window.freestar.trackPageview();
+    })
   }
 }
 

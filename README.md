@@ -94,6 +94,11 @@ Proxy for the GPT setTargeting call to set page level targeting. See [GPT docume
 **FreestarAdSlot.clearPageTargeting**
 Proxy for the GRP clearTargeting call to clear page level targeting. See [GPT documentation](https://developers.google.com/doubleclick-gpt/reference#googletag.PubAdsService_clearTargeting) for more details
 
+**FreestarAdSlot.trackPageView**
+Proxy for the freestar.trackPageview() method.
+
+Freestar collects data values such as url location which is then used in various tables. In order to properly track data sites that are using Single Page Applications (SPAs), or sites with slideshows/carousels that change urls/url parameters these new actions must be taken by the publisher to assure accuracy of the collected data. When the location and/or url is updated the lifecycle of the DOM and/or Window does not reload the pubfig.js script. In order to address this the publisher must invoke the freestar.trackPageview() method. This will ensure that the new url is stored and used throughout the data collection for that page or view. 
+
 ### Glossary
 
 **placementName**
