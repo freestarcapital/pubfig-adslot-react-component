@@ -189,7 +189,6 @@ class FreestarWrapper {
       const adSlots = []
       ads.forEach( (ad) => {
         let adSlot = window.googletag.defineSlot(ad.adUnitPath, ad.slotSize, ad.placementName).addService(window.googletag.pubads())
-
         if (ad.sizeMappings) {
           const sizeMappingArray = ad.sizeMappings
             .reduce((mapping, size) => {
@@ -199,8 +198,8 @@ class FreestarWrapper {
           adSlot.defineSizeMapping(sizeMappingArray)
 
         }
-        if (targeting) {
-          Object.entries(targeting).forEach(entry => {
+        if (ad.targeting) {
+          Object.entries(ad.targeting).forEach(entry => {
             const [key, value] = entry;
             adSlot.setTargeting(key, value);
           })
