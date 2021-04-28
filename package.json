@@ -18,8 +18,8 @@
   },
   "license": "ISC",
   "peerDependencies": {
-    "react": "^15.7.0 || ^16.0",
-    "prop-types": "^15.7.2 "
+    "prop-types": "^15.7.2 ",
+    "react": "^15.7.0 || ^16.0"
   },
   "dependencies": {
     "lodash.isequal": "^4.5.0",

@@ -7,7 +7,8 @@ class FreestarWrapper {
     this.mappingConfig = {}
     this.keyValueConfigMappings = []
     this.keyValueConfigMappingLocation = ''
-    this.newAdSlotQueue = [];
+    this.newAdSlotQueue = []
+    this.adSlotsMap = {}
   }
   async fetchKeyValueConfigMapping(placementMappingLocation) {
     const response = await fetch(placementMappingLocation)
@@ -146,29 +147,28 @@ class FreestarWrapper {
 
     adMap = newAdSlotsToFlush.reduce(async (adMap, newAdSlot) => {
       if (newAdSlot.channel) {
+        if (newAdSlot.adUnitPath) {
+          adMap.directGamAds.push(newAdSlot)
+          return adMap
+        }
         if (!adMap.channelAdMap.channel) {
           adMap.channelAdMap.channel = [];
         }
-        let placementName = await this.getMappedPlacementName(newAdSlot.placementName, newAdSlot.targeting)
+
         adMap.channelAdMap.channel.push({
-          slotId: placementName,
-          placementName: placementName,
+          slotId: newAdSlot.placementName,
+          placementName: newAdSlot.placementName,
           targeting: newAdSlot.targeting,
           callback: newAdSlot.onNewAdSlotsHook
         })
-      } else {
-        if (newAdSlot.adUnitPath) {
-          adMap.directGamAds.push(newAdSlot)
-        } else {
-          let placementName = await this.getMappedPlacementName(newAdSlot.placementName, newAdSlot.targeting)
-          adMap.nonChannelAds.push({
-            slotId: placementName,
-            placementName: placementName,
-            targeting: newAdSlot.targeting,
-            callback: newAdSlot.onNewAdSlotsHook
-          })
-        }
+        return  adMap
       }
+      adMap.nonChannelAds.push({
+        slotId: newAdSlot.placementName,
+        placementName: newAdSlot.placementName,
+        targeting: newAdSlot.targeting,
+        callback: newAdSlot.onNewAdSlotsHook
+      })
       return adMap
     })
     return adMap
@@ -207,6 +207,7 @@ class FreestarWrapper {
         }
         window.googletag.display(adSlot)
         adSlots.push(adSlot)
+        this.adSlotsMap[adslot.getAdUnitPath()] = adSlot
 
       })
       window.googletag.pubads().refresh(adSlots)
@@ -222,35 +223,30 @@ class FreestarWrapper {
     if (queue) {
       this.queueNewAdSlot(placementName,onNewAdSlotsHook, channel, targeting, adUnitPath, slotSize, sizeMappings)
     }
-    else{
+    else {
+      window.freestar.queue.push(async () => {
+        if (!adUnitPath) {
+          this.newPubfigAdSlots(channel, [{
+            slotId: placementName,
+            placementName,
+            targeting
+          }])
 
+        } else {
+          this.newDirectGAMAdSlots([{adUnitPath, slotSize, placementName, sizeMappings, targeting}])
+        }
+      })
     }
-    window.freestar.queue.push(async () => {
-      let adSlot;
-      if (!adUnitPath) {
-        placementName = await this.getMappedPlacementName(placementName, targeting)
-        this.newPubfigAdSlots(channel, [{
-          slotId: placementName,
-          placementName,
-          targeting
-        }])
-
-      }
-      else {
-        this.newDirectGAMAdSlots([{adUnitPath, slotSize, placementName, sizeMappings, targeting}])
-      }
-    })
-
   }
 
-  deleteAdSlot (placementName, targeting, onDeleteAdSlotsHook, adSlot) {
+  deleteAdSlot (placementName, targeting, onDeleteAdSlotsHook, adUnitPath) {
     window.freestar.queue.push(async () => {
-      if(!adSlot){
+      if(!adUnitPath){
         placementName = await this.getMappedPlacementName(placementName, targeting)
         window.freestar.deleteAdSlots({ placementName })
       }
       else {
-        window.googletag.destroySlots([adSlot])
+        window.googletag.destroySlots([this.adSlotsMap[adUnitPath]])
       }
       if (onDeleteAdSlotsHook) {
         onDeleteAdSlotsHook(placementName)
@@ -258,14 +254,14 @@ class FreestarWrapper {
     })
   }
 
-  refreshAdSlot (placementName, targeting, onAdRefreshHook, adSlot) {
+  refreshAdSlot (placementName, targeting, onAdRefreshHook, adUnitPath) {
     window.freestar.queue.push(async() => {
-      if(!adSlot){
+      if(!adUnitPath){
         placementName = await this.getMappedPlacementName(placementName, targeting)
         window.freestar.freestarReloadAdSlot(placementName)
       }
       else {
-        window.googletag.pubads().refresh([adSlot])
+        window.googletag.pubads().refresh([this.adSlotsMap[adUnitPath]])
       }
       if (onAdRefreshHook) {
         onAdRefreshHook(placementName)
