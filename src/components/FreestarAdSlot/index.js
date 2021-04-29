@@ -4,6 +4,7 @@ import Freestar from "./freestarWrapper"
 
 
 
+
 class FreestarAdSlot extends Component {
   constructor(props) {
     const { placementName } = props
@@ -14,6 +15,7 @@ class FreestarAdSlot extends Component {
   async componentDidMount () {
     const { placementName, onNewAdSlotsHook, channel, targeting, keyValueConfigMappingURL, publisher, queue } = this.props
     const { adUnitPath, slotSize, sizeMapping} = this.props;
+
     await Freestar.init(publisher, keyValueConfigMappingURL)
     const mappedPlacementName = await Freestar.getMappedPlacementName(placementName,targeting)
     this.setState({placementName: mappedPlacementName})
@@ -30,7 +32,8 @@ class FreestarAdSlot extends Component {
     if (nextProps.adRefresh !== this.props.adRefresh) {
       Freestar.refreshAdSlot(placementName, targeting, onAdRefreshHook, adUnitPath)
     }
-    if ( (nextProps.queue != this.props.queue) && (nextProps.queue === true)){
+    console.log('wr',nextProps.queue ,this.props.queue)
+    if ( (nextProps.queue != this.props.queue) && (nextProps.queue === false)){
       Freestar.flushQueuedNewAdSlots()
     }
   }

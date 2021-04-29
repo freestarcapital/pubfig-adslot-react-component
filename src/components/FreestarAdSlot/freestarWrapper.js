@@ -138,14 +138,7 @@ class FreestarWrapper {
   buildAdMap() {
     const newAdSlotsToFlush = this.newAdSlotQueue;
     this.newAdSlotQueue = []
-
-    let adMap = {
-      channelAdMap: {},
-      nonChannelAds: [],
-      directGamAds: []
-    }
-
-    adMap = newAdSlotsToFlush.reduce(async (adMap, newAdSlot) => {
+    let adMap = newAdSlotsToFlush.reduce( (adMap, newAdSlot) => {
       if (newAdSlot.channel) {
         if (newAdSlot.adUnitPath) {
           adMap.directGamAds.push(newAdSlot)
@@ -170,13 +163,19 @@ class FreestarWrapper {
         callback: newAdSlot.onNewAdSlotsHook
       })
       return adMap
+    }, {
+      channelAdMap: {},
+      nonChannelAds: [],
+      directGamAds: []
     })
     return adMap
   }
 
   newPubfigAdSlots(channel, placements) {
     window.freestar.queue.push(async () => {
+
       window.freestar.newAdSlots(placements, channel)
+
       placements.forEach( (placement) => {
         if (placement.callback){
           placement.callback(placement.placementName)
@@ -225,6 +224,7 @@ class FreestarWrapper {
     else {
       window.freestar.queue.push(async () => {
         if (!adUnitPath) {
+
           this.newPubfigAdSlots(channel, [{
             slotId: placementName,
             placementName,
