@@ -110,7 +110,8 @@ A set of targeting values for the ad unit placement. See [GPT Documentation](htt
 ### Bypassing Freestar Ad Placements
 If you would like to bypass Freestar Ad placements and render GAM ad units yourself directly please follow the instructions [here](README-BYPASS.md)
 
-
+### Queuing Freestar Ad Placements
+If you would like to allow the freestar library to preload but need to hold of on ad delivery until buisness logic has completed please follow the instructions [here](README-QUEUE.md)
 ### Developer instructions
 
 To publish your changes to npm do the following:

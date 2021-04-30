@@ -32,7 +32,6 @@ class FreestarAdSlot extends Component {
     if (nextProps.adRefresh !== this.props.adRefresh) {
       Freestar.refreshAdSlot(placementName, targeting, onAdRefreshHook, adUnitPath)
     }
-    console.log('wr',nextProps.queue ,this.props.queue)
     if ( (nextProps.queue != this.props.queue) && (nextProps.queue === false)){
       Freestar.flushQueuedNewAdSlots()
     }
