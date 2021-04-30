@@ -9,6 +9,7 @@ class FreestarWrapper {
     this.keyValueConfigMappingLocation = ''
     this.newAdSlotQueue = []
     this.adSlotsMap = {}
+    this.queue = false
   }
   async fetchKeyValueConfigMapping(placementMappingLocation) {
     const response = await fetch(placementMappingLocation)
@@ -224,8 +225,8 @@ class FreestarWrapper {
     })
   }
 
-  newAdSlot (placementName, onNewAdSlotsHook, channel, targeting, adUnitPath, slotSize, sizeMappings, queue) {
-    if (queue) {
+  newAdSlot (placementName, onNewAdSlotsHook, channel, targeting, adUnitPath, slotSize, sizeMappings) {
+    if (this.queueAdCalls) {
       this.queueNewAdSlot(placementName,onNewAdSlotsHook, channel, targeting, adUnitPath, slotSize, sizeMappings)
     }
     else {
@@ -307,6 +308,12 @@ class FreestarWrapper {
     window.freestar.queue.push(() => {
       window.freestar.trackPageview();
     })
+  }
+  queueAdCalls (queue = false) {
+    if (queue == false && this.queue == true){
+      this.flushQueuedNewAdSlots()
+    }
+    this.queue = queue
   }
 }
 

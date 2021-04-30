@@ -13,13 +13,13 @@ class FreestarAdSlot extends Component {
   }
 
   async componentDidMount () {
-    const { placementName, onNewAdSlotsHook, channel, targeting, keyValueConfigMappingURL, publisher, queue } = this.props
+    const { placementName, onNewAdSlotsHook, channel, targeting, keyValueConfigMappingURL, publisher } = this.props
     const { adUnitPath, slotSize, sizeMapping} = this.props;
 
     await Freestar.init(publisher, keyValueConfigMappingURL)
     const mappedPlacementName = await Freestar.getMappedPlacementName(placementName,targeting)
     this.setState({placementName: mappedPlacementName})
-    Freestar.newAdSlot(mappedPlacementName, onNewAdSlotsHook, channel, targeting, adUnitPath, slotSize, sizeMapping, queue)
+    Freestar.newAdSlot(mappedPlacementName, onNewAdSlotsHook, channel, targeting, adUnitPath, slotSize, sizeMapping)
   }
 
   componentWillUnmount () {
@@ -31,9 +31,6 @@ class FreestarAdSlot extends Component {
     const { placementName, onAdRefreshHook, targeting, adUnitPath } = this.props
     if (nextProps.adRefresh !== this.props.adRefresh) {
       Freestar.refreshAdSlot(placementName, targeting, onAdRefreshHook, adUnitPath)
-    }
-    if ( (nextProps.queue != this.props.queue) && (nextProps.queue === false)){
-      Freestar.flushQueuedNewAdSlots()
     }
   }
 
@@ -62,6 +59,10 @@ FreestarAdSlot.clearPageTargeting = (key) => {
 
 FreestarAdSlot.trackPageview = () => {
   Freestar.trackPageview()
+}
+
+FreestarAdSlot.queueAdCalls = (queue) => {
+  Freestar.queueAdCalls(queue)
 }
 
 FreestarAdSlot.propTypes = {
@@ -99,8 +100,7 @@ FreestarAdSlot.defaultProps = {
   adUnitPath: null,
   slotSize : null,
   sizeMapping: null,
-  keyValueConfigMappingURL: null,
-  queue : false
+  keyValueConfigMappingURL: null
 }
 
 export default FreestarAdSlot
