@@ -139,11 +139,13 @@ class FreestarWrapper {
     const newAdSlotsToFlush = this.newAdSlotQueue;
     this.newAdSlotQueue = []
     let adMap = newAdSlotsToFlush.reduce( (adMap, newAdSlot) => {
+
+      if (newAdSlot.adUnitPath) {
+        adMap.directGamAds.push(newAdSlot)
+
+        return adMap
+      }
       if (newAdSlot.channel) {
-        if (newAdSlot.adUnitPath) {
-          adMap.directGamAds.push(newAdSlot)
-          return adMap
-        }
         if (!adMap.channelAdMap.channel) {
           adMap.channelAdMap.channel = [];
         }
@@ -154,6 +156,7 @@ class FreestarWrapper {
           targeting: newAdSlot.targeting,
           callback: newAdSlot.onNewAdSlotsHook
         })
+
         return  adMap
       }
       adMap.nonChannelAds.push({
@@ -172,10 +175,9 @@ class FreestarWrapper {
   }
 
   newPubfigAdSlots(channel, placements) {
+
     window.freestar.queue.push(async () => {
-
       window.freestar.newAdSlots(placements, channel)
-
       placements.forEach( (placement) => {
         if (placement.callback){
           placement.callback(placement.placementName)
@@ -188,6 +190,7 @@ class FreestarWrapper {
       const adSlots = []
       ads.forEach( (ad) => {
         let adSlot = window.googletag.defineSlot(ad.adUnitPath, ad.slotSize, ad.placementName).addService(window.googletag.pubads())
+
         if (ad.sizeMappings) {
           const sizeMappingArray = ad.sizeMappings
             .reduce((mapping, size) => {
@@ -197,15 +200,19 @@ class FreestarWrapper {
           adSlot.defineSizeMapping(sizeMappingArray)
 
         }
+
         if (ad.targeting) {
           Object.entries(ad.targeting).forEach(entry => {
             const [key, value] = entry;
             adSlot.setTargeting(key, value);
           })
         }
+
         window.googletag.display(adSlot)
+
         adSlots.push(adSlot)
-        this.adSlotsMap[adslot.getAdUnitPath()] = adSlot
+        this.adSlotsMap[adSlot.getAdUnitPath()] = adSlot
+
 
       })
       window.googletag.pubads().refresh(adSlots)
@@ -222,12 +229,12 @@ class FreestarWrapper {
       this.queueNewAdSlot(placementName,onNewAdSlotsHook, channel, targeting, adUnitPath, slotSize, sizeMappings)
     }
     else {
-      window.freestar.queue.push(async () => {
-        if (!adUnitPath) {
 
+      window.freestar.queue.push(() => {
+        if (!adUnitPath) {
           this.newPubfigAdSlots(channel, [{
             slotId: placementName,
-            placementName,
+            placementName: placementName,
             targeting
           }])
 
