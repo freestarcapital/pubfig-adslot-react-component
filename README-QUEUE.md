@@ -46,7 +46,6 @@ class Demo extends Component {
           onNewAdSlotsHook={(placementName) => console.log('creating ad', placementName)}
           onDeleteAdSlotsHook={(placementName) => console.log('destroying ad', placementName)}
           onAdRefreshHook={(placementName) => console.log('refreshing ad', placementName)}
-          queue={{queue}}
         />
         <button onClick={this.onHandleClick()}>Trigger Refresh</button>
       </div>
@@ -57,7 +56,8 @@ class Demo extends Component {
 export default Demo
 ```
 
-### Additional Props
-**queue**
-An *optional* boolean that if set to true will restrict the Freestar Library from auctioning or rendering the ad unit. 
-When the value is set to false any queued ad units will be flushed out and auction/rendered together.  
+### API Methods
+**FreestarAdSlot.queueAdCalls**
+Pass a  boolean that if set to true will restrict the Freestar Library from auctioning or rendering ad units. 
+When the value is set to false any queued ad units will be flushed out and auction/rendered together. Please consult your 
+Freestar Support Team before utilizing this to ensure its the best approach
