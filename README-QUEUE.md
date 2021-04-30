@@ -13,15 +13,9 @@ import FreestarAdSlot from '@freestar/pubfig-adslot-react-component'
 import './demo.css'
 
 class Demo extends Component {
-  state = {
-    queue: false
-  }
-
+  FreestarAdSlot.queueAdCalls(true)
   onHandleClick= () => {
-
-    this.setState({
-      queue: true
-    })
+    FreestarAdSlot.queueAdCalls(false)
   }
 
   render() {
@@ -47,7 +41,7 @@ class Demo extends Component {
           onDeleteAdSlotsHook={(placementName) => console.log('destroying ad', placementName)}
           onAdRefreshHook={(placementName) => console.log('refreshing ad', placementName)}
         />
-        <button onClick={this.onHandleClick()}>Trigger Refresh</button>
+        <button onClick={this.onHandleClick()}>Trigger Ad Calls</button>
       </div>
     )
   }
