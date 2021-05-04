@@ -19,7 +19,8 @@ import './demo.css'
 
 class Demo extends Component {
   state = {
-    adRefresh: 0
+    adRefresh: 0,
+    queue: true
   }
 
   onAdRefresh = () => {
@@ -29,15 +30,20 @@ class Demo extends Component {
     })
   }
 
+  onProcessQueue = () => {
+    this.setState({ queue: false })
+  }
+
   render() {
     const placementName = 'PublisherName_970x250_728x90_320x50'
     const publisher = 'publisherName'
     const targeting = { key1: 'value1', key2: 'value2' }
-    const { adRefresh } = this.state
+    const { adRefresh, queue } = this.state
     
     return (
       <div>
         <FreestarAdSlot
+          queue={queue}
           publisher={publisher}
           placementName={placementName}
           targeting={targeting}
@@ -49,6 +55,7 @@ class Demo extends Component {
           onAdRefreshHook={(placementName) => console.log('refreshing ad', placementName)}
         />
         <button onClick={this.onAdRefresh}>Trigger Refresh</button>
+        <button onClick={this.onProcessQueue}>Process Queue</button>
       </div>
     )
   }
