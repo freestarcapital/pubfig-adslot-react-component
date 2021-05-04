@@ -11,6 +11,7 @@ class FreestarWrapper {
     this.adSlotsMap = {}
     this.queue = false
   }
+
   async fetchKeyValueConfigMapping(placementMappingLocation) {
     const response = await fetch(placementMappingLocation)
 
@@ -31,7 +32,9 @@ class FreestarWrapper {
       return [];
     }
   }
-  async init(publisher, keyValueConfigMappingLocation) {
+
+  async init(publisher, keyValueConfigMappingLocation, queue) {
+    this.queue = queue
     window.freestarReactCompontentLoaded = window.freestarReactCompontentLoaded || false
     this.loaded = window.freestarReactCompontentLoaded
     this.logEnabled = window.location.search.indexOf('fslog') > -1 ? true
@@ -226,11 +229,9 @@ class FreestarWrapper {
   }
 
   newAdSlot (placementName, onNewAdSlotsHook, channel, targeting, adUnitPath, slotSize, sizeMappings) {
-    if (this.queueAdCalls) {
+    if (this.queue) {
       this.queueNewAdSlot(placementName,onNewAdSlotsHook, channel, targeting, adUnitPath, slotSize, sizeMappings)
-    }
-    else {
-
+    } else {
       window.freestar.queue.push(() => {
         if (!adUnitPath) {
           this.newPubfigAdSlots(channel, [{
@@ -238,7 +239,6 @@ class FreestarWrapper {
             placementName: placementName,
             targeting
           }])
-
         } else {
           this.newDirectGAMAdSlots([{adUnitPath, slotSize, placementName, sizeMappings, targeting}])
         }
@@ -309,6 +309,7 @@ class FreestarWrapper {
       window.freestar.trackPageview();
     })
   }
+  
   queueAdCalls (queue = false) {
     if (queue == false && this.queue == true){
       this.flushQueuedNewAdSlots()
