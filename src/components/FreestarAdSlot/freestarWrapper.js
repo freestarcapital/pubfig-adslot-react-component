@@ -226,7 +226,7 @@ class FreestarWrapper {
   }
 
   newAdSlot (placementName, onNewAdSlotsHook, channel, targeting, adUnitPath, slotSize, sizeMappings) {
-    if (this.queueAdCalls) {
+    if (this.queue) {
       this.queueNewAdSlot(placementName,onNewAdSlotsHook, channel, targeting, adUnitPath, slotSize, sizeMappings)
     }
     else {
