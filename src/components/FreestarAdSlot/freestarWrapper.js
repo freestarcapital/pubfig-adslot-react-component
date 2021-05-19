@@ -147,11 +147,11 @@ class FreestarWrapper {
         return adMap
       }
       if (newAdSlot.channel) {
-        if (!adMap.channelAdMap.channel) {
-          adMap.channelAdMap.channel = [];
+        if (!adMap.channelAdMap[newAdSlot.channel]) {
+          adMap.channelAdMap[newAdSlot.channel] = [];
         }
 
-        adMap.channelAdMap.channel.push({
+        adMap.channelAdMap[newAdSlot.channel].push({
           slotId: newAdSlot.placementName,
           placementName: newAdSlot.placementName,
           targeting: newAdSlot.targeting,
