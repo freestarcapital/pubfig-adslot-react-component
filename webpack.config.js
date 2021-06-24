@@ -1,5 +1,10 @@
 const path = require('path');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin')
+const webpack = require("webpack");
+const fs = require('fs')
+const packageJson = fs.readFileSync('./package.json')
+const version = JSON.parse(packageJson).version || 0
+const nodeExternals = require('webpack-node-externals')
 
 module.exports = {
   mode: 'production',
@@ -7,7 +12,7 @@ module.exports = {
   output: {
     path: path.resolve('dist'),
     filename: 'index.js',
-    libraryTarget: 'commonjs2',
+    libraryTarget: "commonjs2"
   },
   module: {
     rules: [
@@ -24,22 +29,11 @@ module.exports = {
       'prop-types' : path.resolve(__dirname, './node_modules/prop-types'),
     }
   },
-  externals: {
-    // Don't bundle react
-    react: {
-      commonjs: "react",
-      commonjs2: "react",
-      amd: "React",
-      root: "React"
-    },
-    'prop-types': {
-      root: 'PropTypes',
-      commonjs2: 'prop-types',
-      commonjs: 'prop-types',
-      amd: 'prop-types'
-    }
-  },
+  externals: [nodeExternals()],
   plugins: [
-    new CleanWebpackPlugin()
+    new CleanWebpackPlugin(),
+    new webpack.DefinePlugin({
+        __PACKAGE_VERSION__: '"' + version + '"'
+    })
   ]
 };

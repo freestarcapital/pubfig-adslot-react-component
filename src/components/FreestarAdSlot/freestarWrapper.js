@@ -34,8 +34,7 @@ class FreestarWrapper {
   async init(publisher, keyValueConfigMappingLocation) {
     window.freestarReactCompontentLoaded = window.freestarReactCompontentLoaded || false
     this.loaded = window.freestarReactCompontentLoaded
-    this.logEnabled = window.location.search.indexOf('fslog') > -1 ? true
-      : window.freestarReactCompontentLogEnabled ? window.freestarReactCompontentLogEnabled : false
+    this.logEnabled = window.location.search.indexOf('fslog') > -1
     if (!this.loaded) {
       this.loaded = window.freestarReactCompontentLoaded = true
       this.keyValueConfigMappingLocation = keyValueConfigMappingLocation
@@ -59,8 +58,8 @@ class FreestarWrapper {
     }
   }
   log (level, ...msg)  {
-    let title = 'Pubfig React Plugin ', styles = 'background: #00C389; color: #fff; border-radius: 3px; padding: 3px'
-    if (this.logEnabled) {
+    let title = 'Pubfig React Plugin v'+__PACKAGE_VERSION__, styles = 'background: #00C389; color: #fff; border-radius: 3px; padding: 3px'
+    if (this.logEnabled || (window.location.search.indexOf('fslog') > -1)) {
       console.info(`%c${title}`, styles, ...msg)
     }
   }
@@ -176,8 +175,12 @@ class FreestarWrapper {
   }
 
   newPubfigAdSlots(channel, placements) {
-
     window.freestar.queue.push(async () => {
+      this.log(0,`Calling newAdSlots with`,
+        {
+          channel,
+          placements
+        })
       window.freestar.newAdSlots(placements, channel)
       placements.forEach( (placement) => {
         if (placement.callback){
@@ -231,8 +234,18 @@ class FreestarWrapper {
     }
     else {
 
+      this.log(0,`Calling newAdSlots with`,
+        {
+          channel,
+          placements : [{
+            slotId: placementName,
+            placementName: placementName,
+            targeting
+          }]
+        })
       window.freestar.queue.push(() => {
         if (!adUnitPath) {
+
           this.newPubfigAdSlots(channel, [{
             slotId: placementName,
             placementName: placementName,
@@ -262,6 +275,8 @@ class FreestarWrapper {
   }
 
   refreshAdSlot (placementName, targeting, onAdRefreshHook, adUnitPath) {
+    this.log(0,`Refreshing Ad slot [${placementName}]`)
+
     window.freestar.queue.push(async() => {
       if(!adUnitPath){
         placementName = await this.getMappedPlacementName(placementName, targeting)
@@ -310,7 +325,10 @@ class FreestarWrapper {
     })
   }
   queueAdCalls (queue = false) {
+
+    this.log(0,"Ad Slot queueing " + ( queue ? "enabled" : "disabled"))
     if (queue == false && this.queue == true){
+      this.log(0,"Flushing queued Ad Slots")
       this.flushQueuedNewAdSlots()
     }
     this.queue = queue
