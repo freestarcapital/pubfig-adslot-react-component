@@ -174,20 +174,23 @@ class FreestarWrapper {
     return adMap
   }
 
-  newPubfigAdSlots(channel, placements) {
-    window.freestar.queue.push(async () => {
-      this.log(0,`Calling newAdSlots with`,
-        {
-          channel,
-          placements
+  newPubfigAdSlots(channel, placements = []) {
+    if (placements.length){
+
+      window.freestar.queue.push(async () => {
+        this.log(0,`Calling newAdSlots with`,
+          {
+            channel,
+            placements
+          })
+        window.freestar.newAdSlots(placements, channel)
+        placements.forEach( (placement) => {
+          if (placement.callback){
+            placement.callback(placement.placementName)
+          }
         })
-      window.freestar.newAdSlots(placements, channel)
-      placements.forEach( (placement) => {
-        if (placement.callback){
-          placement.callback(placement.placementName)
-        }
       })
-    })
+    }
   }
   newDirectGAMAdSlots(ads) {
     window.freestar.queue.push(async () => {
