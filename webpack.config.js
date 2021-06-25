@@ -29,7 +29,19 @@ module.exports = {
       'prop-types' : path.resolve(__dirname, './node_modules/prop-types'),
     }
   },
-  externals: [nodeExternals()],
+  externals: {
+    react: {
+      commonjs: "react",
+      commonjs2: "react",
+      amd: "React",
+      root: "React"
+    },
+    'prop-types': {
+      root: 'PropTypes',
+      commonjs2: 'prop-types',
+      commonjs: 'prop-types',
+      amd: 'prop-types'
+    }},
   plugins: [
     new CleanWebpackPlugin(),
     new webpack.DefinePlugin({
