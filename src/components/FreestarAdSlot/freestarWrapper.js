@@ -283,7 +283,7 @@ class FreestarWrapper {
     window.freestar.queue.push(async() => {
       if(!adUnitPath){
         placementName = await this.getMappedPlacementName(placementName, targeting)
-        window.freestar.freestarReloadAdSlot(placementName)
+        window.freestar.refresh(placementName)
       }
       else {
         window.googletag.pubads().refresh([this.adSlotsMap[adUnitPath]])
