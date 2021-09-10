@@ -120,8 +120,8 @@ class FreestarWrapper {
     }
     return placementName
   }
-  queueNewAdSlot (placementName, onNewAdSlotsHook, channel, targeting, adUnitPath, slotSize, sizeMappings) {
-    const args = {placementName, onNewAdSlotsHook, channel, targeting, adUnitPath, slotSize, sizeMappings}
+  queueNewAdSlot (placementName, slotId,  onNewAdSlotsHook, channel, targeting, adUnitPath, slotSize, sizeMappings) {
+    const args = {placementName, slotId, onNewAdSlotsHook, channel, targeting, adUnitPath, slotSize, sizeMappings}
     this.newAdSlotQueue.push(args);
   }
   async flushQueuedNewAdSlots ()
@@ -151,7 +151,7 @@ class FreestarWrapper {
         }
 
         adMap.channelAdMap[newAdSlot.channel].push({
-          slotId: newAdSlot.placementName,
+          slotId: newAdSlot.slotId,
           placementName: newAdSlot.placementName,
           targeting: newAdSlot.targeting,
           callback: newAdSlot.onNewAdSlotsHook
@@ -160,7 +160,7 @@ class FreestarWrapper {
         return  adMap
       }
       adMap.nonChannelAds.push({
-        slotId: newAdSlot.placementName,
+        slotId: newAdSlot.slotId,
         placementName: newAdSlot.placementName,
         targeting: newAdSlot.targeting,
         callback: newAdSlot.onNewAdSlotsHook
@@ -196,7 +196,7 @@ class FreestarWrapper {
     window.freestar.queue.push(async () => {
       const adSlots = []
       ads.forEach( (ad) => {
-        let adSlot = window.googletag.defineSlot(ad.adUnitPath, ad.slotSize, ad.placementName).addService(window.googletag.pubads())
+        let adSlot = window.googletag.defineSlot(ad.adUnitPath, ad.slotSize, ad.slotId).addService(window.googletag.pubads())
 
         if (ad.sizeMappings) {
           const sizeMappingArray = ad.sizeMappings
@@ -225,15 +225,15 @@ class FreestarWrapper {
       window.googletag.pubads().refresh(adSlots)
       ads.forEach( (ad) => {
         if (ad.onNewAdSlotsHook){
-          ad.onNewAdSlotsHook(ad.placementName)
+          ad.onNewAdSlotsHook(ad.slotId)
         }
       })
     })
   }
 
-  newAdSlot (placementName, onNewAdSlotsHook, channel, targeting, adUnitPath, slotSize, sizeMappings) {
+  newAdSlot (placementName, slotId, onNewAdSlotsHook, channel, targeting, adUnitPath, slotSize, sizeMappings) {
     if (this.queue) {
-      this.queueNewAdSlot(placementName,onNewAdSlotsHook, channel, targeting, adUnitPath, slotSize, sizeMappings)
+      this.queueNewAdSlot(placementName, slotId, onNewAdSlotsHook, channel, targeting, adUnitPath, slotSize, sizeMappings)
     }
     else {
 
@@ -241,7 +241,7 @@ class FreestarWrapper {
         {
           channel,
           placements : [{
-            slotId: placementName,
+            slotId: slotId,
             placementName: placementName,
             targeting
           }]
@@ -250,46 +250,46 @@ class FreestarWrapper {
         if (!adUnitPath) {
 
           this.newPubfigAdSlots(channel, [{
-            slotId: placementName,
+            slotId: slotId,
             placementName: placementName,
             targeting
           }])
 
         } else {
-          this.newDirectGAMAdSlots([{adUnitPath, slotSize, placementName, sizeMappings, targeting}])
+          this.newDirectGAMAdSlots([{adUnitPath, slotId, slotSize, placementName, sizeMappings, targeting}])
         }
       })
     }
   }
 
-  deleteAdSlot (placementName, targeting, onDeleteAdSlotsHook, adUnitPath) {
+  deleteAdSlot (placementName, slotId, targeting, onDeleteAdSlotsHook, adUnitPath) {
     window.freestar.queue.push(async () => {
       if(!adUnitPath){
-        placementName = await this.getMappedPlacementName(placementName, targeting)
-        window.freestar.deleteAdSlots({ placementName })
+        slotId = await this.getMappedPlacementName(slotId, targeting)
+        window.freestar.deleteAdSlots({ slotId })
       }
       else {
         window.googletag.destroySlots([this.adSlotsMap[adUnitPath]])
       }
       if (onDeleteAdSlotsHook) {
-        onDeleteAdSlotsHook(placementName)
+        onDeleteAdSlotsHook(slotId)
       }
     })
   }
 
-  refreshAdSlot (placementName, targeting, onAdRefreshHook, adUnitPath) {
-    this.log(0,`Refreshing Ad slot [${placementName}]`)
+  refreshAdSlot (placement, slotId, targeting, onAdRefreshHook, adUnitPath) {
+    this.log(0,`Refreshing Ad slot [${slotId}]`)
 
     window.freestar.queue.push(async() => {
       if(!adUnitPath){
-        placementName = await this.getMappedPlacementName(placementName, targeting)
-        window.freestar.freestarReloadAdSlot(placementName)
+        slotId = await this.getMappedPlacementName(slotId, targeting)
+        window.freestar.freestarReloadAdSlot(slotId)
       }
       else {
         window.googletag.pubads().refresh([this.adSlotsMap[adUnitPath]])
       }
       if (onAdRefreshHook) {
-        onAdRefreshHook(placementName)
+        onAdRefreshHook(slotId)
       }
     })
   }

@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import Freestar from "./freestarWrapper"
-
+import randomString from 'random-string'
 
 
 
@@ -9,7 +9,8 @@ class FreestarAdSlot extends Component {
   constructor(props) {
     const { placementName } = props
     super(props);
-    this.state = { placementName : placementName }
+    const slotId = `${placementName}-${randomString({length:10, numeric:true, letters:true})}`
+    this.state = { placementName : placementName , slotId : slotId}
   }
 
   async componentDidMount () {
@@ -18,19 +19,20 @@ class FreestarAdSlot extends Component {
 
     await Freestar.init(publisher, keyValueConfigMappingURL)
     const mappedPlacementName = await Freestar.getMappedPlacementName(placementName,targeting)
-    this.setState({placementName: mappedPlacementName})
-    Freestar.newAdSlot(mappedPlacementName, onNewAdSlotsHook, channel, targeting, adUnitPath, slotSize, sizeMapping)
+    const slotId = `${mappedPlacementName}-${randomString({length:10, numeric:true, letters:true})}`
+    this.setState({placementName: mappedPlacementName, slotId: slotId})
+    Freestar.newAdSlot(mappedPlacementName,slotId, onNewAdSlotsHook, channel, targeting, adUnitPath, slotSize, sizeMapping)
   }
 
   componentWillUnmount () {
-    const { placementName, onDeleteAdSlotsHook, targeting, adUnitPath } = this.props
-    Freestar.deleteAdSlot(placementName, targeting, onDeleteAdSlotsHook, adUnitPath)
+    const { onDeleteAdSlotsHook, targeting, adUnitPath } = this.props
+    Freestar.deleteAdSlot(this.state.slotId, targeting, onDeleteAdSlotsHook, adUnitPath)
   }
 
   componentWillReceiveProps (nextProps) {
     const { placementName, onAdRefreshHook, targeting, adUnitPath } = this.props
     if (nextProps.adRefresh !== this.props.adRefresh) {
-      Freestar.refreshAdSlot(placementName, targeting, onAdRefreshHook, adUnitPath)
+      Freestar.refreshAdSlot(placementName, this.state.slotId, targeting, onAdRefreshHook, adUnitPath)
     }
   }
 
@@ -40,10 +42,9 @@ class FreestarAdSlot extends Component {
   }
 
   render() {
-    const { placementName, targeting, placementMappingLocation } = this.props
     return (
       <div>
-        <div className={this.classes()} id={this.state.placementName}></div>
+        <div className={this.classes()} id={this.state.slotId}></div>
       </div>
     )
   }
