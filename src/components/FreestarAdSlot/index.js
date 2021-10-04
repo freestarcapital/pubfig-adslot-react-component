@@ -1,26 +1,25 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import Freestar from "./freestarWrapper"
-import randomString from 'random-string'
+
 
 
 
 class FreestarAdSlot extends Component {
   constructor(props) {
-    const { placementName } = props
     super(props);
-    const slotId = `${placementName}-${randomString({length:10, numeric:true, letters:true})}`
-    this.state = { placementName : placementName , slotId : slotId}
+    const { placementName, slotId } = props
+    const elementId = slotId ? slotId : `${placementName}`
+    this.state = { placementName : placementName , slotId : elementId}
   }
 
   async componentDidMount () {
-    const { placementName, onNewAdSlotsHook, channel, targeting, keyValueConfigMappingURL, publisher } = this.props
-    const { adUnitPath, slotSize, sizeMapping} = this.props;
+    const { adUnitPath, slotSize, sizeMapping, placementName, onNewAdSlotsHook, channel, targeting, keyValueConfigMappingURL, publisher } = this.props
+    const { slotId } = this.state;
 
     await Freestar.init(publisher, keyValueConfigMappingURL)
     const mappedPlacementName = await Freestar.getMappedPlacementName(placementName,targeting)
-    const slotId = `${mappedPlacementName}-${randomString({length:10, numeric:true, letters:true})}`
-    this.setState({placementName: mappedPlacementName, slotId: slotId})
+    this.setState({placementName: mappedPlacementName})
     Freestar.newAdSlot(mappedPlacementName,slotId, onNewAdSlotsHook, channel, targeting, adUnitPath, slotSize, sizeMapping)
   }
 
@@ -68,7 +67,9 @@ FreestarAdSlot.queueAdCalls = (queue) => {
 
 FreestarAdSlot.propTypes = {
   publisher: PropTypes.string.isRequired,
+
   placementName: PropTypes.string.isRequired,
+  slotId: PropTypes.string,
   targeting: PropTypes.object,
   channel: PropTypes.string,
   classList: PropTypes.array,
@@ -91,6 +92,7 @@ FreestarAdSlot.propTypes = {
 FreestarAdSlot.defaultProps = {
   publisher: '',
   placementName: '',
+  slotId: null,
   targeting: {},
   channel: null,
   classList: [],
