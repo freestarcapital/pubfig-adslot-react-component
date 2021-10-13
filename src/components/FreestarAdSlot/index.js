@@ -30,9 +30,12 @@ class FreestarAdSlot extends Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    const { placementName, onAdRefreshHook, targeting, adUnitPath } = this.props
+    const { placementName, onAdRefreshHook, targeting, adUnitPath, onNewAdSlotsHook, slotSize, sizeMapping } = this.props
     if (nextProps.adRefresh !== this.props.adRefresh) {
       Freestar.refreshAdSlot(placementName, this.state.slotId, targeting, onAdRefreshHook, adUnitPath)
+    }
+    if (nextProps.channel !== this.props.channel) {
+      Freestar.newAdSlot(placementName, this.state.slotId, onNewAdSlotsHook, nextProps.channel, targeting, adUnitPath, slotSize, sizeMapping)
     }
   }
 
