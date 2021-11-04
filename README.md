@@ -31,6 +31,7 @@ class Demo extends Component {
 
   render() {
     const placementName = 'PublisherName_970x250_728x90_320x50'
+    const slotId = 'in_content_ad_1'
     const publisher = 'publisherName'
     const targeting = { key1: 'value1', key2: 'value2' }
     const { adRefresh } = this.state
@@ -40,6 +41,7 @@ class Demo extends Component {
         <FreestarAdSlot
           publisher={publisher}
           placementName={placementName}
+          slotId={slotId}
           targeting={targeting}
           channel='custom_channel'
           classList={['m-30', 'p-15', 'b-thin-red']}
@@ -64,6 +66,9 @@ A *required* string of the publisher, which will be provided by Freestar.
 
 **placementName**
 A *required* string of the ad unit placement, which will be provided by Freestar.
+
+**slotId**
+An *optional* string to specific the element id of the containing div around the adslot. Defaults to the placement. 
 
 **targeting**
 An *optional* object of key/value pairs for targeting.

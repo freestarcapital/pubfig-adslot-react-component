@@ -7,30 +7,34 @@ import Freestar from "./freestarWrapper"
 
 class FreestarAdSlot extends Component {
   constructor(props) {
-    const { placementName } = props
     super(props);
-    this.state = { placementName : placementName }
+    const { placementName, slotId } = props
+    const elementId = slotId ? slotId : `${placementName}`
+    this.state = { placementName : placementName , slotId : elementId}
   }
 
   async componentDidMount () {
-    const { placementName, onNewAdSlotsHook, channel, targeting, keyValueConfigMappingURL, publisher } = this.props
-    const { adUnitPath, slotSize, sizeMapping} = this.props;
+    const { adUnitPath, slotSize, sizeMapping, placementName, onNewAdSlotsHook, channel, targeting, keyValueConfigMappingURL, publisher } = this.props
+    const { slotId } = this.state;
 
     await Freestar.init(publisher, keyValueConfigMappingURL)
     const mappedPlacementName = await Freestar.getMappedPlacementName(placementName,targeting)
     this.setState({placementName: mappedPlacementName})
-    Freestar.newAdSlot(mappedPlacementName, onNewAdSlotsHook, channel, targeting, adUnitPath, slotSize, sizeMapping)
+    Freestar.newAdSlot(mappedPlacementName,slotId, onNewAdSlotsHook, channel, targeting, adUnitPath, slotSize, sizeMapping)
   }
 
   componentWillUnmount () {
-    const { placementName, onDeleteAdSlotsHook, targeting, adUnitPath } = this.props
-    Freestar.deleteAdSlot(placementName, targeting, onDeleteAdSlotsHook, adUnitPath)
+    const { onDeleteAdSlotsHook, targeting, adUnitPath } = this.props
+    Freestar.deleteAdSlot(this.state.slotId, targeting, onDeleteAdSlotsHook, adUnitPath)
   }
 
   componentWillReceiveProps (nextProps) {
-    const { placementName, onAdRefreshHook, targeting, adUnitPath } = this.props
+    const { placementName, onAdRefreshHook, targeting, adUnitPath, onNewAdSlotsHook, slotSize, sizeMapping } = this.props
     if (nextProps.adRefresh !== this.props.adRefresh) {
-      Freestar.refreshAdSlot(placementName, targeting, onAdRefreshHook, adUnitPath)
+      Freestar.refreshAdSlot(placementName, this.state.slotId, targeting, onAdRefreshHook, adUnitPath)
+    }
+    if (nextProps.channel !== this.props.channel) {
+      Freestar.newAdSlot(placementName, this.state.slotId, onNewAdSlotsHook, nextProps.channel, targeting, adUnitPath, slotSize, sizeMapping)
     }
   }
 
@@ -40,10 +44,9 @@ class FreestarAdSlot extends Component {
   }
 
   render() {
-    const { placementName, targeting, placementMappingLocation } = this.props
     return (
       <div>
-        <div className={this.classes()} id={this.state.placementName}></div>
+        <div className={this.classes()} id={this.state.slotId}></div>
       </div>
     )
   }
@@ -67,7 +70,9 @@ FreestarAdSlot.queueAdCalls = (queue) => {
 
 FreestarAdSlot.propTypes = {
   publisher: PropTypes.string.isRequired,
+
   placementName: PropTypes.string.isRequired,
+  slotId: PropTypes.string,
   targeting: PropTypes.object,
   channel: PropTypes.string,
   classList: PropTypes.array,
@@ -90,6 +95,7 @@ FreestarAdSlot.propTypes = {
 FreestarAdSlot.defaultProps = {
   publisher: '',
   placementName: '',
+  slotId: null,
   targeting: {},
   channel: null,
   classList: [],
