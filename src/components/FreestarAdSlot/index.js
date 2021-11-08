@@ -21,8 +21,8 @@ class FreestarAdSlot extends Component {
   }
 
   componentWillUnmount () {
-    const { onDeleteAdSlotsHook, targeting, adUnitPath } = this.props
-    Freestar.deleteAdSlot(this.state.slotId, targeting, onDeleteAdSlotsHook, adUnitPath)
+    const { placementName, onDeleteAdSlotsHook, targeting, adUnitPath } = this.props
+    Freestar.deleteAdSlot(placementName, this.state.slotId, targeting, onDeleteAdSlotsHook, adUnitPath)
   }
 
   componentWillReceiveProps (nextProps) {
