@@ -280,16 +280,17 @@ class FreestarWrapper {
   refreshAdSlot (placement, slotId, targeting, onAdRefreshHook, adUnitPath) {
     this.log(0,`Refreshing Ad slot [${slotId}]`)
 
+    let placementName = slotId;
     window.freestar.queue.push(async() => {
       if(!adUnitPath){
-        slotId = await this.getMappedPlacementName(slotId, targeting)
-        window.freestar.freestarReloadAdSlot(slotId)
+        placementName = await this.getMappedPlacementName(slotId, targeting)
+        window.freestar.refresh(placementName)
       }
       else {
         window.googletag.pubads().refresh([this.adSlotsMap[adUnitPath]])
       }
       if (onAdRefreshHook) {
-        onAdRefreshHook(slotId)
+        onAdRefreshHook(placementName)
       }
     })
   }
