@@ -246,7 +246,7 @@ class FreestarWrapper {
     window.freestar.queue.push(async () => {
       if(!adUnitPath) {
         slotId = await this.getMappedPlacementName(slotId, targeting)
-        window.freestar.deleteAdSlots({ slotId })
+        window.freestar.deleteAdSlots(slotId);
       } else {
         window.googletag.destroySlots([this.adSlotsMap[adUnitPath]])
       }
