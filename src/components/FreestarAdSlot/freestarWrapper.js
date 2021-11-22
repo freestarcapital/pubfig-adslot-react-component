@@ -61,6 +61,9 @@ class FreestarWrapper {
     }
   }
 
+  refreshExists(slot) {
+    return freestar.refreshLibrary && freestar.refreshLibrary.hasOwnProperty([slot]);
+  }
   /* example mapping
     {
       mappings:
@@ -203,6 +206,9 @@ class FreestarWrapper {
         window.googletag.display(adSlot)
         adSlots.push(adSlot)
         this.adSlotsMap[adSlot.getAdUnitPath()] = adSlot
+        if (!this.refreshExists()) {
+          freestar.refreshLibraryCreator(ad.slotId)
+        }
       })
       window.googletag.pubads().refresh(adSlots)
       ads.forEach((ad) => {
@@ -249,7 +255,7 @@ class FreestarWrapper {
         window.freestar.deleteAdSlots(slotId);
       } else {
         const slot = this.adSlotsMap[adUnitPath];
-        if (freestar.refreshLibrary && freestar.refreshLibrary.hasOwnProperty([slot.getSlotElementId()])) {
+        if (this.refreshExists(slot.getSlotElementId())) {
           delete freestar.refreshLibrary[slot.getSlotElementId()];
         }
         window.googletag.destroySlots([slot])
