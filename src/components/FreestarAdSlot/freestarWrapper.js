@@ -248,7 +248,11 @@ class FreestarWrapper {
         slotId = await this.getMappedPlacementName(slotId, targeting)
         window.freestar.deleteAdSlots(slotId);
       } else {
-        window.googletag.destroySlots([this.adSlotsMap[adUnitPath]])
+        const slot = this.adSlotsMap[adUnitPath];
+        if (freestar.refreshLibrary && freestar.refreshLibrary.hasOwnProperty([slot.getSlotElementId()])) {
+          delete freestar.refreshLibrary[slot.getSlotElementId()];
+        }
+        window.googletag.destroySlots([slot])
       }
       if (onDeleteAdSlotsHook) {
         onDeleteAdSlotsHook(placementName)
