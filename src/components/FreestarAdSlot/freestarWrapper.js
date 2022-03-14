@@ -314,8 +314,9 @@ class FreestarWrapper {
         this.log(0,'Flushing queued Ad Slots')
         this.flushQueuedNewAdSlots()
       }
-      this.queue = queue
+
     })
+    this.queue = queue
   }
 }
 
