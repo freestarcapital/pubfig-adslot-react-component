@@ -306,16 +306,18 @@ class FreestarWrapper {
   }
 
   queueAdCalls (queue = false) {
+    this.log(0, 'Ad Slot queueing ' + ( queue ? 'enabled' : 'disabled'))
     window.freestar = window.freestar || {}
     window.freestar.queue =  window.freestar.queue || []
     window.freestar.queue.push(() => {
-      this.log(0, 'Ad Slot queueing ' + ( queue ? 'enabled' : 'disabled'))
+
       if (queue === false && this.queue === true) {
         this.log(0,'Flushing queued Ad Slots')
         this.flushQueuedNewAdSlots()
       }
-      this.queue = queue
+
     })
+    this.queue = queue
   }
 }
 
