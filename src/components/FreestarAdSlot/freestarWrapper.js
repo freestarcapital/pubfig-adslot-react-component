@@ -315,9 +315,10 @@ class FreestarWrapper {
         this.log(0,'Flushing queued Ad Slots')
         this.flushQueuedNewAdSlots()
       }
-
+      this.queue = queue
     })
-    this.queue = queue
+    //if the queue was turned off it will be updated once its processed above otherwise we can toggle true
+    if (queue === true) this.queue = queue
   }
 }
 
