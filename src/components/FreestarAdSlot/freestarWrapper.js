@@ -122,13 +122,18 @@ class FreestarWrapper {
     this.newAdSlotQueue.push(args);
   }
 
-  async flushQueuedNewAdSlots () {
-    let adMap = this.buildAdMap()
-    this.newDirectGAMAdSlots(adMap.directGamAds)
-    this.newPubfigAdSlots(null,adMap.nonChannelAds)
-    for (const channel in adMap.channelAdMap) {
-      this.newPubfigAdSlots(channel,adMap.channelAdMap[channel])
-    }
+  flushQueuedNewAdSlots () {
+    //using timeout to allow any async ad unit inits can get queued
+    setTimeout(()=>{
+      this.log(0,'Flushing queued Ad Slots')
+      let adMap = this.buildAdMap()
+      this.log(0,'adMap:',adMap)
+      this.newDirectGAMAdSlots(adMap.directGamAds)
+      this.newPubfigAdSlots(null,adMap.nonChannelAds)
+      for (const channel in adMap.channelAdMap) {
+        this.newPubfigAdSlots(channel,adMap.channelAdMap[channel])
+      }
+    },0)
 
   }
 
@@ -215,6 +220,9 @@ class FreestarWrapper {
 
   newAdSlot (placementName, slotId, onNewAdSlotsHook, channel, targeting, adUnitPath, slotSize, sizeMappings) {
     if (this.queue) {
+      this.log(0,`Queueing newAdSlots with`,{
+        placementName, slotId, onNewAdSlotsHook, channel, targeting, adUnitPath, slotSize, sizeMappings
+      });
       this.queueNewAdSlot(placementName, slotId, onNewAdSlotsHook, channel, targeting, adUnitPath, slotSize, sizeMappings)
     } else {
       this.log(0,`Calling newAdSlots with`, {
@@ -307,18 +315,12 @@ class FreestarWrapper {
 
   queueAdCalls (queue = false) {
     this.log(0, 'Ad Slot queueing ' + ( queue ? 'enabled' : 'disabled'))
-    window.freestar = window.freestar || {}
-    window.freestar.queue =  window.freestar.queue || []
-    window.freestar.queue.push(() => {
+    if (queue === false && this.queue === true) {
 
-      if (queue === false && this.queue === true) {
-        this.log(0,'Flushing queued Ad Slots')
-        this.flushQueuedNewAdSlots()
-      }
-      this.queue = queue
-    })
-    //if the queue was turned off it will be updated once its processed above otherwise we can toggle true
-    if (queue === true) this.queue = queue
+      this.flushQueuedNewAdSlots()
+    }
+    this.queue = queue
+
   }
 }
 

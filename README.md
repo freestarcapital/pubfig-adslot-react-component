@@ -18,17 +18,6 @@ import FreestarAdSlot from '@freestar/pubfig-adslot-react-component'
 import './demo.css'
 
 class Demo extends Component {
-  state = {
-    adRefresh: 0
-  }
-
-  onAdRefresh = () => {
-    const { adRefresh } = this.state
-    this.setState({
-      adRefresh: adRefresh + 1
-    })
-  }
-
   render() {
     const placementName = 'PublisherName_970x250_728x90_320x50'
     const slotId = 'in_content_ad_1'
@@ -45,7 +34,6 @@ class Demo extends Component {
           targeting={targeting}
           channel='custom_channel'
           classList={['m-30', 'p-15', 'b-thin-red']}
-          adRefresh={adRefresh}
           onNewAdSlotsHook={(placementName) => console.log('creating ad', placementName)}
           onDeleteAdSlotsHook={(placementName) => console.log('destroying ad', placementName)}
           onAdRefreshHook={(placementName) => console.log('refreshing ad', placementName)}
@@ -80,7 +68,7 @@ An *optional* string of a custom channel to use.
 An *optional* array of strings representing any additional classes that should be applied to the wrapper dom element of the ad slot.
 
 **adRefresh**
-An *optional* number bound to the ad refresh. Increment this value to trigger a refresh of the ad slot.
+An *optional* number bound to the ad refresh. Increment this value to trigger a refresh of the ad slot. Please consult your Freestar support team for more information.
 
 **onNewAdSlotsHook**
 An *optional* event hook that returns the `placementName` when the component **mounts** and an ad is requested.

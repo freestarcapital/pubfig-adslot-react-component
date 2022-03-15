@@ -64,7 +64,9 @@ FreestarAdSlot.trackPageview = () => {
 FreestarAdSlot.queueAdCalls = (queue) => {
   Freestar.queueAdCalls(queue)
 }
-
+FreestarAdSlot.releaseQueuedAds = () => {
+  Freestar.flushQueuedNewAdSlots()
+}
 FreestarAdSlot.propTypes = {
   publisher: PropTypes.string.isRequired,
   placementName: PropTypes.string.isRequired,

@@ -54,4 +54,10 @@ export default Demo
 **FreestarAdSlot.queueAdCalls**
 Pass a  boolean that if set to true will restrict the Freestar Library from auctioning or rendering ad units. 
 When the value is set to false any queued ad units will be flushed out and auction/rendered together. Please consult your 
-Freestar Support Team before utilizing this to ensure its the best approach
+Freestar Support Team before utilizing this to ensure the best approach
+
+    
+**FreestarAdSlot.releaseQueuedAds()**
+When called  any queued ad units will be flushed out and auction/rendered together. Please consult your
+Freestar Support Team before utilizing this to ensure the best approach
+
