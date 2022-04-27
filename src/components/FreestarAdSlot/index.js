@@ -11,6 +11,7 @@ class FreestarAdSlot extends Component {
   }
 
   async componentDidMount () {
+    console.log('componentDidMount')
     const { adUnitPath, slotSize, sizeMapping, placementName, onNewAdSlotsHook, channel, targeting, keyValueConfigMappingURL, publisher } = this.props
     const { slotId } = this.state
 
@@ -21,19 +22,38 @@ class FreestarAdSlot extends Component {
   }
 
   componentWillUnmount () {
+    console.log('componentWillUnmount')
     const { placementName, onDeleteAdSlotsHook, targeting, adUnitPath } = this.props
     Freestar.deleteAdSlot(placementName, this.state.slotId, targeting, onDeleteAdSlotsHook, adUnitPath)
   }
 
-  componentWillReceiveProps (nextProps) {
-    const { placementName, onAdRefreshHook, targeting, adUnitPath, onNewAdSlotsHook, slotSize, sizeMapping } = this.props
-    if (nextProps.adRefresh !== this.props.adRefresh) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
+    console.log('componentWillReceiveProps nextProps', {nextProps: nextProps, prevProps: this.props})
+    // const { placementName, onAdRefreshHook, targeting, adUnitPath, onNewAdSlotsHook, slotSize, sizeMapping } = this.props
+    // if (nextProps.adRefresh !== this.props.adRefresh) {
+    //   Freestar.refreshAdSlot(placementName, this.state.slotId, targeting, onAdRefreshHook, adUnitPath)
+    // }
+    // if (nextProps.channel !== this.props.channel) {
+    //   Freestar.newAdSlot(placementName, this.state.slotId, onNewAdSlotsHook, nextProps.channel, targeting, adUnitPath, slotSize, sizeMapping)
+    // }
+  }
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    console.log('componentDidUpdate', { prevProps: prevProps, nextProps: this.props})
+    // const { placementName, onAdRefreshHook, targeting, adUnitPath, onNewAdSlotsHook, slotSize, sizeMapping, channel, adRefresh } = this.props
+    const { placementName, onAdRefreshHook, targeting, adUnitPath, onNewAdSlotsHook, slotSize, sizeMapping, channel, adRefresh } = prevProps
+    if (this.props.adRefresh !== adRefresh) {
       Freestar.refreshAdSlot(placementName, this.state.slotId, targeting, onAdRefreshHook, adUnitPath)
     }
-    if (nextProps.channel !== this.props.channel) {
-      Freestar.newAdSlot(placementName, this.state.slotId, onNewAdSlotsHook, nextProps.channel, targeting, adUnitPath, slotSize, sizeMapping)
+    if (this.props.channel !== channel) {
+      Freestar.newAdSlot(placementName, this.state.slotId, onNewAdSlotsHook, this.props.channel, targeting, adUnitPath, slotSize, sizeMapping)
     }
   }
+
+  // static getDerivedStateFromProps(props, state) {
+  //   console.log('getDerivedStateFromProps', props, state)
+  //   return null
+  // }
 
   classes = () => {
     const { classList } = this.props
