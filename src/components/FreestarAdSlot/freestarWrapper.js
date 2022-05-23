@@ -49,6 +49,7 @@ class FreestarWrapper {
       script.async = true
       if (integrity !== null){
         script.integrity = integrity
+        script.crossOrigin='anonymous'
       }
       this.log(0,'========== LOADING Pubfig ==========')
       document.body.appendChild(script)
