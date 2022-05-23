@@ -78,7 +78,9 @@ An *optional* event hook that returns the `placementName` when the component **u
 
 **onAdRefreshHook**
 An *optional* event hook that returns the `placementName` when the component refreshes an ad.
-       
+
+**integrity**
+An *optional* attribute that when passed enables SRI for our pubfig library. The component will use this value for the integrity attribute when loading pubfig 
 ### API Methods
 
 **FreestarAdSlot.setPageTargeting**

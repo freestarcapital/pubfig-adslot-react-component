@@ -28,7 +28,7 @@ class FreestarWrapper {
       return [];
     }
   }
-  async init (publisher, keyValueConfigMappingLocation) {
+  async init (publisher, keyValueConfigMappingLocation, integrity) {
     window.freestarReactCompontentLoaded = window.freestarReactCompontentLoaded || false
     this.loaded = window.freestarReactCompontentLoaded
     this.logEnabled = window.location.search.indexOf('fslog') > -1
@@ -47,6 +47,9 @@ class FreestarWrapper {
       const script = document.createElement('script')
       script.src = url
       script.async = true
+      if (integrity !== null){
+        script.integrity = integrity
+      }
       this.log(0,'========== LOADING Pubfig ==========')
       document.body.appendChild(script)
       if (keyValueConfigMappingLocation && this.keyValueConfigMappings.length === 0) {
