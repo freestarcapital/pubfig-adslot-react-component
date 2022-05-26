@@ -36,13 +36,13 @@ class FreestarAdSlot extends Component {
     Freestar.deleteAdSlot(placementName, this.state.slotId, targeting, onDeleteAdSlotsHook, adUnitPath)
   }
 
-  componentWillReceiveProps (nextProps) {
-    const { placementName, onAdRefreshHook, targeting, adUnitPath, onNewAdSlotsHook, slotSize, sizeMapping } = this.props
-    if (nextProps.adRefresh !== this.props.adRefresh) {
+  componentDidUpdate(prevProps) {
+    const { placementName, onAdRefreshHook, targeting, adUnitPath, onNewAdSlotsHook, slotSize, sizeMapping, channel, adRefresh } = prevProps
+    if (this.props.adRefresh !== adRefresh) {
       Freestar.refreshAdSlot(placementName, this.state.slotId, targeting, onAdRefreshHook, adUnitPath)
     }
-    if (nextProps.channel !== this.props.channel) {
-      Freestar.newAdSlot(placementName, this.state.slotId, onNewAdSlotsHook, nextProps.channel, targeting, adUnitPath, slotSize, sizeMapping)
+    if (this.props.channel !== channel) {
+      Freestar.newAdSlot(placementName, this.state.slotId, onNewAdSlotsHook, this.props.channel, targeting, adUnitPath, slotSize, sizeMapping)
     }
   }
 
