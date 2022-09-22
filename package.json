@@ -23,7 +23,8 @@
   },
   "dependencies": {
     "lodash.isequal": "^4.5.0",
-    "lodash.sortby": "^4.7.0"
+    "lodash.sortby": "^4.7.0",
+    "terser": "^5.14.2"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",
