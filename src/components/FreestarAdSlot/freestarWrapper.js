@@ -192,9 +192,13 @@ class FreestarWrapper {
       })
     }
   }
-  newDirectGAMAdSlots (ads) {
-    window.freestar.queue.push(async () => {
-      const adSlots = []
+  newDirectGAMAdSlots (ads = []) {
+    // if there are no ads to create, return
+    if (ads.length === 0) {
+      return;
+    }
+    window.freestar.queue.push(() => {
+      const adSlots = [];
       ads.forEach((ad) => {
         let adSlot = window.googletag.defineSlot(ad.adUnitPath, ad.slotSize, ad.slotId).addService(window.googletag.pubads())
         if (ad.sizeMappings) {
@@ -213,6 +217,7 @@ class FreestarWrapper {
         adSlots.push(adSlot)
         this.adSlotsMap[adSlot.getAdUnitPath()] = adSlot
       })
+      // PubAdsService.refresh() takes an array of slots to refresh, empty array will throw an error
       window.googletag.pubads().refresh(adSlots)
       ads.forEach((ad) => {
         if (ad.onNewAdSlotsHook) {
