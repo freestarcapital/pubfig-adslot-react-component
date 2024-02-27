@@ -44,15 +44,21 @@ class FreestarWrapper {
       window.freestar.config =  window.freestar.config || {}
       window.freestar.config.enabled_slots = window.freestar.config.enabled_slots || []
 
-      const script = document.createElement('script')
-      script.src = url
-      script.async = true
-      if (integrity !== null){
-        script.integrity = integrity
-        script.crossOrigin='anonymous'
+      if (!document.querySelector('script[src*="pubfig.min.js"]')) { 
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        if (integrity !== null){
+          script.integrity = integrity
+          script.crossOrigin='anonymous'
+        }
+        this.log(0,'========== LOADING Pubfig ==========')
+        document.body.appendChild(script)
       }
-      this.log(0,'========== LOADING Pubfig ==========')
-      document.body.appendChild(script)
+      else { 
+        this.log(0,'========== Pubfig already loaded ==========')
+      }
+      
       if (keyValueConfigMappingLocation && this.keyValueConfigMappings.length === 0) {
         this.keyValueConfigMappings = await this.fetchKeyValueConfigMapping(keyValueConfigMappingLocation)
       }
