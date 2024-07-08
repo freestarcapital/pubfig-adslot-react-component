@@ -52,7 +52,7 @@ class FreestarWrapper {
         script.crossOrigin='anonymous'
       }
       this.log(0,'========== LOADING Pubfig ==========')
-      document.body.appendChild(script)
+      document.head.appendChild(script)
       if (keyValueConfigMappingLocation && this.keyValueConfigMappings.length === 0) {
         this.keyValueConfigMappings = await this.fetchKeyValueConfigMapping(keyValueConfigMappingLocation)
       }
