@@ -107,11 +107,97 @@ If you would like to bypass Freestar Ad placements and render GAM ad units yours
 
 ### Queuing Freestar Ad Placements
 If you would like to allow the freestar library to preload but need to hold of on ad delivery until buisness logic has completed please follow the instructions [here](README-QUEUE.md)
-### Developer instructions
+### Releasing a new version to npm
 
-To publish your changes to npm do the following:
+This package is published to npm as `@freestar/pubfig-adslot-react-component` under the shared `freestar_engineering` account.
 
-- PR your changes to Master
-- Once approved, merge your branch to master
-- Switch to the master branch and run the build `npm run build`
-- Publish the package using np `np major|minor|patch`  
+#### Prerequisites (one-time setup)
+
+1. Log in to npm under the shared account:
+   ```sh
+   npm login
+   ```
+   You will receive a one-time password via email at the `freestar_engineering` mailbox. Use it to complete login.
+
+2. Confirm you have publish access to the `@freestar` scope:
+   ```sh
+   npm access list packages | grep pubfig-adslot
+   ```
+   The line for `@freestar/pubfig-adslot-react-component` must show `read-write`. If it does not, ask an `@freestar` org admin to add you.
+
+#### Release flow
+
+1. Open a pull request with your changes against `master`.
+2. Once approved, merge into `master` and pull locally:
+   ```sh
+   git checkout master
+   git pull origin master
+   ```
+3. Reinstall dependencies and rebuild from a clean state:
+   ```sh
+   rm -rf node_modules
+   npm install
+   npm run build
+   ```
+4. Bump the version, generate the local commit and tag:
+   ```sh
+   npm version patch -m "%s"
+   # use `minor` or `major` instead of `patch` if appropriate
+   ```
+5. Rebuild against the bumped version:
+   ```sh
+   npm run build
+   ```
+6. Publish to npm (see "2FA gotcha" below before running):
+   ```sh
+   npm publish
+   ```
+7. Push the version commit and the new tag to GitHub:
+   ```sh
+   git push origin master --follow-tags
+   ```
+8. Create a GitHub Release from the new tag:
+   - Open `https://github.com/freestarcapital/pubfig-adslot-react-component/releases/tag/vX.Y.Z`
+   - Click "Create release from tag"
+   - Title: `vX.Y.Z`. Mark "Set as the latest release". Publish.
+9. Verify the publish succeeded:
+   ```sh
+   npm view @freestar/pubfig-adslot-react-component version
+   ```
+   Should print the version you just released.
+
+#### 2FA gotcha and how to bypass it
+
+The `@freestar` npm organization enforces 2FA for writes. The `freestar_engineering` account is configured to send a one-time password via email **only for login**, not for publish operations. As a result, `npm publish` fails with HTTP 403:
+
+```
+npm error 403 Forbidden ... Two-factor authentication or granular access token with bypass 2fa enabled is required to publish packages.
+```
+
+The current npm CLI does not prompt for an OTP in this flow, and `np` (referenced in older docs) inherits the same problem. The reliable workaround is to use a **granular access token with 2FA bypass enabled**:
+
+1. Log in to `https://www.npmjs.com` as `freestar_engineering`.
+2. Go to "Access Tokens" -> "Generate New Token" -> "Granular Access Token".
+3. Configure:
+   - **Token name:** anything descriptive (e.g. `pubfig-adslot-react-publish`)
+   - **Expiration:** 30 days (renew as needed)
+   - **Packages and scopes - Permissions:** Read and write
+   - **Packages and scopes - Selection:** `@freestar/pubfig-adslot-react-component` (or the full `@freestar` scope)
+   - **Bypass 2FA for this token:** enabled
+4. Generate and copy the token (shown only once). It starts with `npm_`.
+5. Configure npm to use the token locally:
+   ```sh
+   npm config set //registry.npmjs.org/:_authToken=npm_xxxxxxxxxxxxxxxxxxxxxx
+   ```
+6. Run `npm publish`. It will succeed without an OTP prompt.
+
+#### Cleanup after publishing
+
+Once the release is live, remove the token from your local config:
+
+```sh
+npm config delete //registry.npmjs.org/:_authToken
+```
+
+Optionally also revoke the token at `https://www.npmjs.com/settings/freestar_engineering/tokens`.
+
