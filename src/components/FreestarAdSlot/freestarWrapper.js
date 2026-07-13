@@ -208,10 +208,7 @@ class FreestarWrapper {
           adSlot.defineSizeMapping(sizeMappingArray)
         }
         if (ad.targeting) {
-          Object.entries(ad.targeting).forEach(entry => {
-            const [key, value] = entry;
-            adSlot.setTargeting(key, value);
-          })
+          adSlot.setConfig({ targeting: ad.targeting });
         }
         window.googletag.display(adSlot)
         adSlots.push(adSlot)
@@ -292,7 +289,7 @@ class FreestarWrapper {
     window.freestar = window.freestar || {}
     window.freestar.queue =  window.freestar.queue || []
     window.freestar.queue.push(() => {
-      window.googletag.pubads().setTargeting(key, value)
+      window.googletag.setConfig({ targeting: { [key]: value } })
     })
     this.pageKeyValuePairs[key] = value
   }
@@ -302,9 +299,9 @@ class FreestarWrapper {
     window.freestar.queue =  window.freestar.queue || []
     window.freestar.queue.push(() => {
       if (key) {
-        window.googletag.pubads().clearTargeting(key)
+        window.googletag.setConfig({ targeting: { [key]: null } })
       } else {
-        window.googletag.pubads().clearTargeting()
+        window.googletag.setConfig({ targeting: null })
       }
     })
     if (key) {
