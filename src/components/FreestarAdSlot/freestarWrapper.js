@@ -1,6 +1,7 @@
 // Load the full build.
 import isEqual from 'lodash.isequal'
 import sortBy from 'lodash.sortby'
+import { setSlotTargeting, setPageTargeting, clearPageTargeting } from './gptConfigApi'
 class FreestarWrapper {
   constructor () {
     this.pageKeyValuePairs = {}
@@ -208,7 +209,7 @@ class FreestarWrapper {
           adSlot.defineSizeMapping(sizeMappingArray)
         }
         if (ad.targeting) {
-          adSlot.setConfig({ targeting: ad.targeting });
+          setSlotTargeting({ slot: adSlot, value: ad.targeting })
         }
         window.googletag.display(adSlot)
         adSlots.push(adSlot)
@@ -289,7 +290,7 @@ class FreestarWrapper {
     window.freestar = window.freestar || {}
     window.freestar.queue =  window.freestar.queue || []
     window.freestar.queue.push(() => {
-      window.googletag.setConfig({ targeting: { [key]: value } })
+      setPageTargeting({ gpt: window.googletag, key, value })
     })
     this.pageKeyValuePairs[key] = value
   }
@@ -298,11 +299,7 @@ class FreestarWrapper {
     window.freestar = window.freestar || {}
     window.freestar.queue =  window.freestar.queue || []
     window.freestar.queue.push(() => {
-      if (key) {
-        window.googletag.setConfig({ targeting: { [key]: null } })
-      } else {
-        window.googletag.setConfig({ targeting: null })
-      }
+      clearPageTargeting({ gpt: window.googletag, key })
     })
     if (key) {
       delete this.pageKeyValuePairs[key]
