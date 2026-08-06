@@ -1,2 +1,9 @@
 * @freestarcapital/phoenix-rising
 *.tf   @freestarcapital/platform
+*.tf.json         @freestarcapital/platform
+*.tfvars          @freestarcapital/platform
+*.tfvars.json     @freestarcapital/platform
+*.tfstate         @freestarcapital/platform
+*.tfstate.backup  @freestarcapital/platform
+*.tfplan          @freestarcapital/platform
+**/.terraform.lock.hcl  @freestarcapital/platform
